@@ -7,6 +7,7 @@ import { useAuthStore } from "./store/auth.store";
 import AuthScreen from "./screens/auth.screen";
 import CameraScreen from "./screens/camera.screen";
 import FYPScreen from "./screens/fyp.screen";
+import SplashScreen from "./screens/splash.screen";
 
 export type AppStackParamList = {
   Camera: undefined;
@@ -15,6 +16,7 @@ export type AppStackParamList = {
 export type AuthStackParamList = {
   Auth: undefined;
   Fyp: undefined;
+  Splash: undefined;
 };
 
 const AppStack = createNativeStackNavigator<AppStackParamList>();
@@ -31,6 +33,7 @@ const Routes = () => {
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+          <AuthStack.Screen name="Splash" component={SplashScreen} />
           <AuthStack.Screen name="Auth" component={AuthScreen} />
           <AuthStack.Screen name="Fyp" component={FYPScreen} />
         </AuthStack.Navigator>
