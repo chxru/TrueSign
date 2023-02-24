@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--GEDI is developed at Language and Media Processing Laboratory, University of Maryland.-->
+<GEDI xmlns="http://lamp.cfar.umd.edu/GEDI" version="1.0">
+	<DL_DOCUMENT src="wav95e00-page03_3.tif" NrOfPages="1" docTag="xml">
+		<DL_PAGE gedi_type="DL_PAGE" src="wav95e00-page03_3.tif" pageID="1" width="2560" height="3300">
+			<DL_ZONE gedi_type="DLSignature" id="None" col="302" row="1888" width="531" height="136" Overlapped="Yes" AuthorID=""> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="337" row="2140" width="508" height="167" Overlapped="Yes" AuthorID=""> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1345" row="1481" width="876" height="155" Overlapped="Yes" AuthorID="Watson, R.T."> </DL_ZONE>
+		</DL_PAGE>
+	</DL_DOCUMENT>
+</GEDI>

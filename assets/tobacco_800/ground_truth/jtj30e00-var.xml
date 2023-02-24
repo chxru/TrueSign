@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--GEDI is developed at Language and Media Processing Laboratory, University of Maryland.-->
+<GEDI xmlns="http://lamp.cfar.umd.edu/GEDI" version="1.0">
+	<DL_DOCUMENT src="jtj30e00-var.tif" NrOfPages="1" docTag="xml">
+		<DL_PAGE gedi_type="DL_PAGE" src="jtj30e00-var.tif" pageID="1" width="2560" height="3285">
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1517" row="1501" width="655" height="224" Overlapped="Yes" AuthorID="Jessup, H.S."> </DL_ZONE>
+		</DL_PAGE>
+	</DL_DOCUMENT>
+</GEDI>
