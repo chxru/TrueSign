@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--GEDI is developed at Language and Media Processing Laboratory, University of Maryland.-->
+<GEDI xmlns="http://lamp.cfar.umd.edu/GEDI" version="1.0">
+	<DL_DOCUMENT src="zkd43f00_2.tif" NrOfPages="1" docTag="xml">
+		<DL_PAGE gedi_type="DL_PAGE" src="zkd43f00_2.tif" pageID="1" width="2544" height="3295">
+			<DL_ZONE gedi_type="DLSignature" id="None" col="383" row="2435" width="677" height="132" Overlapped="Yes" AuthorID="Hsieh, T.C."> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1223" row="2644" width="891" height="147" Overlapped="Yes" AuthorID=""> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1254" row="2776" width="751" height="228" Overlapped="Yes" AuthorID=""> </DL_ZONE>
+		</DL_PAGE>
+	</DL_DOCUMENT>
+</GEDI>

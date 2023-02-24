@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--GEDI is developed at Language and Media Processing Laboratory, University of Maryland.-->
+<GEDI xmlns="http://lamp.cfar.umd.edu/GEDI" version="1.0">
+	<DL_DOCUMENT src="idr55d00.tif" NrOfPages="1" docTag="xml">
+		<DL_PAGE gedi_type="DL_PAGE" src="idr55d00.tif" pageID="1" width="2544" height="3300">
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1745" row="1884" width="294" height="105" Overlapped="Yes" AuthorID="Keaton, J.L."> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1772" row="2252" width="457" height="121" Overlapped="Yes" AuthorID="Millaway, B.K."> </DL_ZONE>
+			<DL_ZONE gedi_type="DLSignature" id="None" col="1791" row="2454" width="586" height="101" Overlapped="Yes" AuthorID="Hobbs, W.D."> </DL_ZONE>
+			<DL_ZONE gedi_type="DLLogo" id="None" col="391" row="171" width="379" height="184"> </DL_ZONE>
+		</DL_PAGE>
+	</DL_DOCUMENT>
+</GEDI>
