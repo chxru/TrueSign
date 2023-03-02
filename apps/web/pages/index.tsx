@@ -1,54 +1,129 @@
 import {
   Center,
-  Box,
   Button,
   FormControl,
   FormLabel,
   Input,
+  Card,
+  CardHeader,
+  Heading,
+  CardBody,
+  FormErrorMessage,
 } from '@chakra-ui/react';
-import { FormEvent } from 'react';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
+import { useDropzone } from 'react-dropzone';
+
+interface IForm {
+  moduleName: string;
+  hours: number;
+}
 
 export function Index() {
-  const handleImageUpload = async (event: FormEvent) => {
-    // const formData = new FormData();
-    console.log(event);
+  const initialValues: IForm = {
+    moduleName: '',
+    hours: 1,
+  };
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
 
-    // await fetch("http://localhost:5000/upload", {method: "POST"})
+  const handleImageUpload = async (
+    form: IForm,
+    actions: FormikHelpers<IForm>
+  ) => {
+    if (acceptedFiles.length === 0) {
+      actions.setSubmitting(false);
 
-    console.log('Done uploading');
+      // TODO: show error message
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('image', acceptedFiles[0]);
+    formData.append('moduleName', form.moduleName);
+    formData.append('hours', form.hours.toString());
+
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+
+      actions.setStatus({ success: true });
+      actions.setSubmitting(false);
+      actions.resetForm();
+    } catch (error) {
+      actions.setSubmitting(false);
+    }
   };
 
   return (
-    <Center>
-      <Box p={4}>
-        <h1>Upload the attendance sheet</h1>
-        <form
-          onSubmit={(evt) => {
-            evt.preventDefault();
-            handleImageUpload(evt);
-          }}
-        >
-          <FormControl isRequired>
-            <FormLabel>Module Name: </FormLabel>
-            <Input type="text" />
-            <FormLabel>Time/ Number of hours:</FormLabel>
-            <select placeholder="Select Number of hours...">
-              <option>1 hour</option>
-              <option>2 hour</option>
-              <option>3 hour</option>
-              <option>4 hour</option>
-            </select>
-            <Input type="text" />
-            <FormLabel>Venue: </FormLabel>
-            <Input type="text" />
-            <FormLabel>Select the image file to upload: </FormLabel>
-            <Input id="image-upload" type="file" />
-            <Button mt={4} type="submit">
-              Upload
-            </Button>
-          </FormControl>
-        </form>
-      </Box>
+    <Center height={'100vh'}>
+      <Card direction={'column'}>
+        <CardHeader>
+          <Heading size="md">Upload the attendance sheet</Heading>
+        </CardHeader>
+
+        <CardBody>
+          <Formik initialValues={initialValues} onSubmit={handleImageUpload}>
+            {(props) => (
+              <Form>
+                <Field name="moduleName">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.name && form.touched.name}
+                    >
+                      <FormLabel>Module Name</FormLabel>
+                      <Input {...field} type="text" />
+                      <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <Field name="hours">
+                  {({ field, form }) => (
+                    <FormControl
+                      isRequired
+                      isInvalid={form.errors.name && form.touched.name}
+                    >
+                      <FormLabel>Number of hours</FormLabel>
+                      <Input {...field} type="number" />
+                      <FormErrorMessage>{form.errors.name}</FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+
+                <FormControl>
+                  <FormLabel>Upload sign sheets</FormLabel>
+                  <Center
+                    height={'150px'}
+                    paddingX={'50px'}
+                    cursor={'pointer'}
+                    {...getRootProps({ className: 'dropzone' })}
+                  >
+                    <input {...getInputProps()} />
+                    {acceptedFiles.length ? (
+                      acceptedFiles[0].name
+                    ) : (
+                      <p>Drag and drop images, or click to select files</p>
+                    )}
+                  </Center>
+                </FormControl>
+
+                <Center>
+                  <Button
+                    mt={4}
+                    colorScheme={'teal'}
+                    isLoading={props.isSubmitting}
+                    type="submit"
+                  >
+                    Upload
+                  </Button>
+                </Center>
+              </Form>
+            )}
+          </Formik>
+        </CardBody>
+      </Card>
     </Center>
   );
 }
