@@ -25,6 +25,7 @@
     "@nrwl/vite": "15.7.2",
     "@nrwl/webpack": "15.7.2",
     "@nrwl/workspace": "15.7.2",
+    "@nxrs/cargo": "^0.3.3",
     "@testing-library/react": "13.4.0",
     "@types/express": "4.17.13",
     "@types/jest": "28.1.1",

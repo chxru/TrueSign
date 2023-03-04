@@ -1943,6 +1943,13 @@
     yargs "^17.6.2"
     yargs-parser "21.1.1"
 
+"@nxrs/cargo@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@nxrs/cargo/-/cargo-0.3.3.tgz#4cb05fa99e944772b8494d82666b9885b96f1bbd"
+  integrity sha512-Osh6dbWfygkCTLwedIv/+qyFUJ/rvultE4KN8ELimBgaGKbPrCqqlxVqhnzAcfEv2qYs/tLKRKvPCJqCBCH1Ig==
+  dependencies:
+    chalk "^4.1.2"
+
 "@parcel/watcher@2.0.4":
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/@parcel/watcher/-/watcher-2.0.4.tgz#f300fef4cc38008ff4b8c29d92588eced3ce014b"
