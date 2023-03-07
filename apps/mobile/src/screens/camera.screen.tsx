@@ -6,6 +6,21 @@ import { Camera, useCameraDevices } from "react-native-vision-camera";
 
 import { AppStackParamList } from "../routes";
 
+const Overlay: FC = () => {
+  return (
+    <View
+      style={{
+        zIndex: 10,
+        position: "absolute",
+        bottom: "10px",
+        backgroundColor: "red",
+      }}
+    >
+      <Text>Overlay</Text>
+    </View>
+  );
+};
+
 const CameraScreen: FC<NativeStackScreenProps<AppStackParamList, "Camera">> = ({
   navigation,
 }) => {
@@ -22,12 +37,15 @@ const CameraScreen: FC<NativeStackScreenProps<AppStackParamList, "Camera">> = ({
   }
 
   return (
-    <Camera
-      style={StyleSheet.absoluteFill}
-      device={device}
-      isActive={isFocused}
-      photo={true}
-    />
+    <>
+      <Camera
+        style={StyleSheet.absoluteFill}
+        device={device}
+        isActive={!isFocused}
+        photo={true}
+      />
+      <Overlay />
+    </>
   );
 };
 
