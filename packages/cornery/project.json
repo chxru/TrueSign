@@ -1,0 +1,94 @@
+{
+  "name": "cornery",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "packages/cornery/cornery",
+  "targets": {
+    "deploy": {
+      "executor": "@nxlv/python:sls-deploy",
+      "dependsOn": ["build"],
+      "options": {}
+    },
+    "package": {
+      "executor": "@nxlv/python:sls-package",
+      "dependsOn": ["build"],
+      "options": {}
+    },
+    "docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pydoc-markdown -p cornery --render-toc > docs/source/api.md",
+        "cwd": "packages/cornery"
+      }
+    },
+    "lock": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "packages/cornery"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["packages/cornery/dist"],
+      "options": {
+        "outputPath": "packages/cornery/dist",
+        "publish": true,
+        "lockedVersions": true,
+        "bundleLocalDependencies": true
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": ["reports/packages/cornery/pylint.txt"],
+      "options": {
+        "outputFile": "reports/packages/cornery/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": [
+        "reports/packages/cornery/unittests",
+        "coverage/packages/cornery"
+      ],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "packages/cornery"
+      }
+    },
+    "tox": {
+      "executor": "@nxlv/python:tox",
+      "outputs": [
+        "reports/packages/cornery/unittests",
+        "coverage/packages/cornery"
+      ],
+      "options": {
+        "silent": false,
+        "args": ""
+      }
+    }
+  },
+  "tags": []
+}

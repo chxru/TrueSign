@@ -1,0 +1,30 @@
+service: cornery
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    usePoetry: false
+
+package:
+  individually: false
+  patterns:
+    - '!**'
+    - 'cornery/**'
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: ap-southeast-1
+
+functions:
+  cornery:
+    handler: cornery/index.handler
+    events:
+      - s3:
+          bucket: truesignfyp-image-upload-bucket
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: upload/
+          existing: true
