@@ -514,3 +514,7 @@ cython_debug/
 
 # Next.js
 .next
+
+# minio local folder
+minio/**/*
+!minio/.gitkeep

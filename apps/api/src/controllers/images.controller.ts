@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { s3 } from '../services/s3.service';
+import { minio } from '../services/minio.service';
 
 const router = Router();
 
@@ -13,7 +13,8 @@ router.post('/upload', async (req, res) => {
   }
 
   try {
-    await s3.uploadFile('upload', req.files.image.data);
+    const extension = req.files.image.name.split('.').pop();
+    await minio.uploadFile('upload', req.files.image.data, extension);
 
     res.sendStatus(200);
   } catch (error) {
