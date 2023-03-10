@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { minio } from '../services/minio.service';
+import { IStorageService, MinioService } from '../services';
 
 const router = Router();
 
@@ -13,15 +13,21 @@ router.post('/upload', async (req, res) => {
   }
 
   try {
+    const storageService: IStorageService = new MinioService();
+
     const extension = req.files.image.name.split('.').pop();
-    await minio.uploadFile('upload', req.files.image.data, extension);
+    await storageService.upload({
+      data: req.files.image.data,
+      directory: 'upload',
+      extension,
+    });
 
     res.sendStatus(200);
   } catch (error) {
     if (error instanceof Error) {
       res.status(500).send(error.message);
     } else {
-      res.status(500).send('Internal Server Error while uploading s3');
+      res.status(500).send('Internal Server Error while uploading');
     }
   }
 });
