@@ -518,6 +518,9 @@ cython_debug/
 # minio local folder
 minio/**/*
 !minio/.gitkeep
+!minio/mc.Dockerfile
+!minio/mc.sh
+!minio/README.md
 
 # ignore temp dir
 /tmp
