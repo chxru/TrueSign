@@ -1,0 +1,81 @@
+{
+  "name": "cornery",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/cornery/src",
+  "targets": {
+    "docs": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "pydoc-markdown -p cornery --render-toc > docs/source/api.md",
+        "cwd": "apps/cornery"
+      }
+    },
+    "lock": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "poetry lock --no-update",
+        "cwd": "apps/cornery"
+      }
+    },
+    "add": {
+      "executor": "@nxlv/python:add",
+      "options": {}
+    },
+    "update": {
+      "executor": "@nxlv/python:update",
+      "options": {}
+    },
+    "remove": {
+      "executor": "@nxlv/python:remove",
+      "options": {}
+    },
+    "build": {
+      "executor": "@nxlv/python:build",
+      "outputs": ["apps/services/cornery/dist"],
+      "options": {
+        "outputPath": "apps/services/cornery/dist",
+        "publish": false,
+        "lockedVersions": false,
+        "bundleLocalDependencies": false
+      }
+    },
+    "install": {
+      "executor": "@nxlv/python:install",
+      "options": {
+        "silent": false,
+        "args": "",
+        "cacheDir": ".cache/pypoetry",
+        "verbose": false,
+        "debug": false
+      }
+    },
+    "lint": {
+      "executor": "@nxlv/python:flake8",
+      "outputs": ["reports/apps/cornery/pylint.txt"],
+      "options": {
+        "outputFile": "reports/apps/cornery/pylint.txt"
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["reports/apps/cornery/unittests", "coverage/apps/cornery"],
+      "options": {
+        "command": "poetry run pytest tests/",
+        "cwd": "packages/cornery"
+      }
+    },
+    "tox": {
+      "executor": "@nxlv/python:tox",
+      "outputs": [
+        "reports/packages/cornery/unittests",
+        "coverage/packages/cornery"
+      ],
+      "options": {
+        "silent": false,
+        "args": ""
+      }
+    }
+  },
+  "tags": []
+}

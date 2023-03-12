@@ -14,6 +14,7 @@
     "express-fileupload": "^1.4.0",
     "formik": "^2.2.9",
     "framer-motion": "^10.0.1",
+    "kafkajs": "^2.2.4",
     "minio": "^7.0.32",
     "next": "13.1.1",
     "react": "18.2.0",
