@@ -20,9 +20,11 @@
     "react": "18.2.0",
     "react-calendar": "^4.0.0",
     "react-dom": "18.2.0",
+    "react-draggable": "^4.4.5",
     "react-dropzone": "^14.2.3",
     "tslib": "^2.3.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zustand": "^4.3.6"
   },
   "devDependencies": {
     "@babel/preset-react": "^7.14.5",
