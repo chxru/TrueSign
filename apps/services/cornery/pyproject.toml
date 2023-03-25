@@ -19,6 +19,7 @@ readme = 'README.md'
 
   [[tool.poetry.packages]]
   include = "cornery"
+  from = "src"
 
   [tool.poetry.dependencies]
   python = ">=3.8,<3.10"
