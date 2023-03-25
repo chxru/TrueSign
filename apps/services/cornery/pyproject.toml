@@ -3,7 +3,7 @@ branch = true
 source = [ "src" ]
 
 [tool.coverage.report]
-exclude_lines = ['if TYPE_CHECKING:']
+exclude_lines = [ "if TYPE_CHECKING:" ]
 show_missing = true
 
 [tool.pytest.ini_options]
@@ -14,8 +14,8 @@ name = "cornery"
 version = "1.0.0"
 description = "Detect corners of given image"
 authors = [ ]
-license = 'Proprietary'
-readme = 'README.md'
+license = "Proprietary"
+readme = "README.md"
 
   [[tool.poetry.packages]]
   include = "cornery"
@@ -27,8 +27,6 @@ readme = 'README.md'
   minio = "^7.1.13"
   opencv-python = "^4.7.0.72"
 
-
-
 [build-system]
-requires = ["poetry-core==1.1.0"]
+requires = [ "poetry-core==1.1.0" ]
 build-backend = "poetry.core.masonry.api"
