@@ -26,6 +26,7 @@ readme = "README.md"
   confluent-kafka = "^2.0.2"
   minio = "^7.1.13"
   opencv-python = "^4.7.0.72"
+  python-dotenv = "^1.0.0"
 
 [build-system]
 requires = [ "poetry-core==1.1.0" ]
