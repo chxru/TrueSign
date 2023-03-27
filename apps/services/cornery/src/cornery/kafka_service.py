@@ -1,7 +1,15 @@
+import os
+from dotenv import load_dotenv
 from confluent_kafka import Consumer
 
+load_dotenv()
+1
 kafka_config = {
-    'bootstrap.servers': 'localhost:9092',
+    'bootstrap.servers': os.getenv("CONFLUENT_SERVER"),
+    'security.protocol': 'SASL_SSL',
+    'sasl.mechanisms': 'PLAIN',
+    'sasl.username': os.getenv("CONFLUENT_API_KEY"),
+    'sasl.password': os.getenv("CONFLUENT_API_SECRET"),
     'group.id': 'cornery',
     'auto.offset.reset': 'earliest'
 }
@@ -35,8 +43,10 @@ class KafkaService:
             if msg.error():
                 print("Consumer error: {}".format(msg.error()))
                 continue
-            print('Received message: {}'.format(msg.value().decode('utf-8')))
-            self.__on_message(msg.value().decode('utf-8'))
+
+            message = msg.value().decode('utf-8')
+            print('Received message: {}'.format(message))
+            self.__on_message(message)
 
     def close(self):
         self.__consumer.close()
