@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import json
 from minio_service import MinioService
 
 minio = MinioService()
@@ -62,10 +63,12 @@ def __get_contour(original):
 
 
 def detect_corners(message: str):
+    obj = json.loads(message)
+
     # download image from minio
-    file_name = message.split("/")[-1]
+    file_name = obj['Key'].split("/")[-1]
     saved_file = f"/tmp/{file_name}"
-    minio.copy_object(message, saved_file)
+    minio.copy_object(obj['Key'], saved_file)
 
     image = cv2.imread(saved_file)
     corners = __get_contour(image)
