@@ -1,7 +1,10 @@
+from bson import ObjectId
 import cv2
 import numpy as np
 import json
+from datetime import datetime
 from minio_service import MinioService
+from mongo import get_db
 
 minio = MinioService()
 
@@ -68,9 +71,30 @@ def detect_corners(message: str):
     # download image from minio
     file_name = obj['Key'].split("/")[-1]
     saved_file = f"/tmp/{file_name}"
-    minio.copy_object(obj['Key'], saved_file)
+
+    try:
+        minio.copy_object(obj['Key'], saved_file)
+    except Exception as e:
+        print(e)
+        return
 
     image = cv2.imread(saved_file)
     corners = __get_contour(image)
 
-    print(corners.squeeze())
+    # save to mongo
+    db = get_db()
+    db['uploadedimages'].update_one(
+        {'_id': ObjectId(file_name.split(".")[0])},
+        {'$set': {
+            'corners': {
+                'top_left': corners[0].tolist(),
+                'top_right': corners[1].tolist(),
+                'bottom_right': corners[2].tolist(),
+                'bottom_left': corners[3].tolist()
+            },
+            'status': 1,
+            'lastUpdateAt': datetime.utcnow()
+        },
+        },
+        upsert=True
+    )
