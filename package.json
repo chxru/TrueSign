@@ -17,6 +17,7 @@
     "framer-motion": "^10.0.1",
     "kafkajs": "^2.2.4",
     "minio": "^7.0.32",
+    "mongoose": "^7.0.3",
     "next": "13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
