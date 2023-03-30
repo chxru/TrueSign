@@ -27,6 +27,7 @@ readme = "README.md"
   minio = "^7.1.13"
   opencv-python = "^4.7.0.72"
   python-dotenv = "^1.0.0"
+  pymongo = {extras = ["srv"], version = "^4.3.3"}
 
 [build-system]
 requires = [ "poetry-core==1.1.0" ]
