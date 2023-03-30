@@ -45,7 +45,6 @@ class KafkaService:
                 continue
 
             message = msg.value().decode('utf-8')
-            print('Received message: {}'.format(message))
             self.__on_message(message)
 
     def close(self):
