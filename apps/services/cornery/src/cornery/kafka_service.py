@@ -1,9 +1,11 @@
 import os
+from typing import Callable
 from dotenv import load_dotenv
 from confluent_kafka import Consumer
 
 load_dotenv()
-1
+
+
 kafka_config = {
     'bootstrap.servers': os.getenv("CONFLUENT_SERVER"),
     'security.protocol': 'SASL_SSL',
@@ -17,11 +19,8 @@ kafka_config = {
 
 class KafkaService:
     """Initiate connection to Kafka and consume messages from a topic."""
-    __consumer: Consumer = None
-    __topic: str = None
-    __on_message: callable = None
 
-    def __init__(self, topic: str, on_message: callable) -> None:
+    def __init__(self, topic: str, on_message: Callable[[str], None]) -> None:
         """Initiate connection to Kafka and consume messages from a topic.
 
         Args:
