@@ -1,17 +1,20 @@
+import os
+from dotenv import load_dotenv
 from minio import Minio
 from minio.error import InvalidResponseError
 
+load_dotenv()
+
+
 minio_config = {
-    "endpoint": "localhost:9000",
-    "access_key": "minio",
-    "secret_key": "minio123",
+    "endpoint": os.getenv("MINIO_ENDPOINT") or "localhost:9000",
+    "access_key": os.getenv("MINIO_ACCESS_KEY") or "minio",
+    "secret_key": os.getenv("MINIO_SECRET_KEY") or "minio123",
     "secure": False
 }
 
 
 class MinioService:
-    __minio: Minio = None
-
     def __init__(self) -> None:
         self.__minio = Minio(**minio_config)
 
