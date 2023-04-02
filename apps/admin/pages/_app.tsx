@@ -8,6 +8,7 @@ import {
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { SidebarLayout } from '../layouts/sidebar.layout';
 import { SuperAdminAllow } from '../layouts/superadmin.layout';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
@@ -31,7 +32,9 @@ function CustomApp({ Component, pageProps }: AppProps) {
               <>
                 <SignedIn>
                   <SuperAdminAllow>
-                    <Component {...pageProps} />
+                    <SidebarLayout>
+                      <Component {...pageProps} />
+                    </SidebarLayout>
                   </SuperAdminAllow>
                 </SignedIn>
                 <SignedOut>
