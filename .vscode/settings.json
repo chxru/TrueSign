@@ -2,5 +2,6 @@
     "editor.formatOnSave": true,
     "python.analysis.extraPaths": [
         "./apps/services/cornery/src/cornery"
-    ]
+    ],
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }
