@@ -22,6 +22,7 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
+import { AiOutlineUserAdd } from 'react-icons/ai';
 import { FiHome, FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { useUser } from '@clerk/nextjs';
@@ -35,12 +36,13 @@ interface LinkItemProps {
 
 const LinkItems: Array<LinkItemProps> = [
   { name: 'Home', icon: FiHome, url: '/' },
+  { name: 'Invite User', icon: AiOutlineUserAdd, url: '/invite' },
 ];
 
 export const SidebarLayout = ({ children }: { children: ReactNode }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
-    <Box minH="100vh" bg={useColorModeValue('gray.100', 'gray.900')}>
+    <Box minH="100vh">
       <SidebarContent
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
