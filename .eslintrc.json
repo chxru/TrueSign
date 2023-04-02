@@ -37,6 +37,12 @@
         "jest": true
       },
       "rules": {}
+    },
+    {
+      "files": ["*.tsx"],
+      "rules": {
+        "no-console": ["warn", { "allow": ["warn", "error"] }]
+      }
     }
   ]
 }
