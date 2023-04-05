@@ -2810,6 +2810,19 @@
     snakecase-keys "5.4.4"
     tslib "2.4.1"
 
+"@clerk/backend@^0.16.0":
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/@clerk/backend/-/backend-0.16.0.tgz#72576d2489c2524fa85b4cd5b64f4ce9273d87a1"
+  integrity sha512-xtOlDPqUaM7o+Fyc+QJ5O9qI22Qi6stwfD8pFrd5G1CC+tfxHqyPUfxqR3lr8IUFqZL4eujZijhzPPFx7jtEfg==
+  dependencies:
+    "@clerk/types" "^3.33.0"
+    "@peculiar/webcrypto" "1.4.1"
+    "@types/node" "16.18.6"
+    deepmerge "4.2.2"
+    node-fetch-native "1.0.1"
+    snakecase-keys "5.4.4"
+    tslib "2.4.1"
+
 "@clerk/clerk-react@^4.14.0":
   version "4.14.0"
   resolved "https://registry.yarnpkg.com/@clerk/clerk-react/-/clerk-react-4.14.0.tgz#6daad5a88a8cfda5f20b720f73ad23bd2bd98a4b"
@@ -2827,6 +2840,21 @@
   dependencies:
     "@clerk/backend" "^0.15.0"
     "@clerk/types" "^3.32.0"
+    "@types/cookies" "0.7.7"
+    "@types/express" "4.17.14"
+    "@types/node-fetch" "2.6.2"
+    camelcase-keys "6.2.2"
+    cookie "0.5.0"
+    snakecase-keys "3.2.1"
+    tslib "2.4.1"
+
+"@clerk/clerk-sdk-node@^4.8.1":
+  version "4.8.1"
+  resolved "https://registry.yarnpkg.com/@clerk/clerk-sdk-node/-/clerk-sdk-node-4.8.1.tgz#e9f9d775157d830247cbdd10e03bc0bd8609da70"
+  integrity sha512-+ofFmha5tvI1hwTcySh/GmppF//463uH6PamSwAR5U2sdDmIWr9YnNJrF5/NQTr7E458jipY/Tl8hKFQmDNY7A==
+  dependencies:
+    "@clerk/backend" "^0.16.0"
+    "@clerk/types" "^3.33.0"
     "@types/cookies" "0.7.7"
     "@types/express" "4.17.14"
     "@types/node-fetch" "2.6.2"
@@ -2855,6 +2883,13 @@
   version "3.32.0"
   resolved "https://registry.yarnpkg.com/@clerk/types/-/types-3.32.0.tgz#86232317d66d0b6bbf0194ddd1049ddb141816f3"
   integrity sha512-0qRhgoZwLSOj02lGV1TKDwk+FZ/wgJPnvQeJ1GjjXPFNn4lvaAtB9ZmlMHqwcvqY/amj1NDzLkTZ1NBWOMVPjg==
+  dependencies:
+    csstype "3.1.1"
+
+"@clerk/types@^3.33.0":
+  version "3.33.0"
+  resolved "https://registry.yarnpkg.com/@clerk/types/-/types-3.33.0.tgz#4e0dc802302f3de157a1d1e85cf105a7a48698f9"
+  integrity sha512-AjiDfA5NgjKAOFguEPYpaCyNSlwGy/7xKXB6pY9EofvKJjEiSiTXHtfsXMHmi8S3bhv26ryg9lyJGltLZfzHIQ==
   dependencies:
     csstype "3.1.1"
 
