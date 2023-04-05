@@ -5,14 +5,17 @@ import fileUpload from 'express-fileupload';
 
 // routes
 import imagesRouter from './controllers/images.controller';
+import invitesRouter from './controllers/invite.controller';
 
 const app = express();
 
 // middleware
 app.use(fileUpload());
+app.use(express.json());
 
 // routes
 app.use('/image', imagesRouter);
+app.use('/invites', invitesRouter);
 
 app.get('/', (req, res) => {
   res.send({ message: 'Welcome to api!' });
