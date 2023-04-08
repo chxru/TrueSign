@@ -2,6 +2,7 @@ import { MongoDBConnect } from '@truesign/mongo';
 import * as dotenv from 'dotenv';
 import express from 'express';
 import fileUpload from 'express-fileupload';
+import morgan from 'morgan';
 
 // routes
 import imagesRouter from './controllers/images.controller';
@@ -10,6 +11,7 @@ import invitesRouter from './controllers/invite.controller';
 const app = express();
 
 // middleware
+app.use(morgan('dev'));
 app.use(fileUpload());
 app.use(express.json());
 
@@ -17,8 +19,8 @@ app.use(express.json());
 app.use('/image', imagesRouter);
 app.use('/invites', invitesRouter);
 
-app.get('/', (req, res) => {
-  res.send({ message: 'Welcome to api!' });
+app.get('/healthcheck', (req, res) => {
+  res.send({ status: 'ok' });
 });
 
 dotenv.config();
