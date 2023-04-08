@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@truesign/frontend": ["packages/frontend-common/src/index.ts"],
       "@truesign/mongo": ["packages/mongo-schema/src/index.ts"]
     }
   },
