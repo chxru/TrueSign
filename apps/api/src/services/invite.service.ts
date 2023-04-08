@@ -1,19 +1,17 @@
 import { InvitesModel, UserModel } from '@truesign/mongo';
-import { Request, Response } from 'express';
+import {
+  ExpressRequest,
+  ExpressResponse,
+  ICreateInviteReqBody,
+  ICreateInviteRes,
+} from '@truesign/types';
 import { startSession } from 'mongoose';
 import { CreateInviteLink } from './clerk/clerk.service';
 
-// TODO: Make this reusable
-interface RequestBody extends Request {
-  body: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: 'student' | 'staff';
-  };
-}
-
-export const CreateInvite = async (req: RequestBody, res: Response) => {
+export const CreateInvite = async (
+  req: ExpressRequest<ICreateInviteReqBody>,
+  res: ExpressResponse<ICreateInviteRes>
+) => {
   // TODO: Do request validation
 
   // start mongoose transaction
@@ -45,8 +43,7 @@ export const CreateInvite = async (req: RequestBody, res: Response) => {
 
     await session.commitTransaction();
 
-    res.send({
-      message: 'Invite created',
+    res.status(201).send({
       inviteId,
     });
   } catch (error) {
