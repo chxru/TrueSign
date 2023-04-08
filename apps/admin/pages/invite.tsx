@@ -11,8 +11,11 @@ import {
   Radio,
   RadioGroup,
 } from '@chakra-ui/react';
+import { Fetcher } from '@truesign/frontend';
+import { ICreateInviteRes } from '@truesign/types';
 import { useFormik } from 'formik';
 import Head from 'next/head';
+import { useState } from 'react';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
@@ -26,6 +29,8 @@ const validationSchema = toFormikValidationSchema(schema);
 type formType = z.infer<typeof schema>;
 
 const InvitePage = () => {
+  const [requestInProgress, setRequestInProgress] = useState(false);
+
   const formik = useFormik<formType>({
     initialValues: {
       email: '',
@@ -34,8 +39,21 @@ const InvitePage = () => {
       role: 'student',
     },
     validationSchema,
-    onSubmit: async (values) => {
-      console.log(values);
+    onSubmit: async (values, actions) => {
+      setRequestInProgress(true);
+
+      try {
+        const { inviteId } = await Fetcher.post<ICreateInviteRes>(
+          '/invites/create',
+          values
+        );
+        console.log(inviteId);
+        actions.resetForm();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setRequestInProgress(false);
+      }
     },
   });
 
@@ -121,7 +139,12 @@ const InvitePage = () => {
               </RadioGroup>
             </FormControl>
 
-            <Button type="submit" colorScheme={'teal'} width="full">
+            <Button
+              type="submit"
+              colorScheme={'teal'}
+              width="full"
+              isLoading={requestInProgress}
+            >
               Invite User
             </Button>
           </form>
