@@ -1,7 +1,17 @@
+import os
+from typing import Callable
+from dotenv import load_dotenv
 from confluent_kafka import Consumer
 
+load_dotenv()
+
+
 kafka_config = {
-    'bootstrap.servers': 'localhost:9092',
+    'bootstrap.servers': os.getenv("CONFLUENT_SERVER"),
+    'security.protocol': 'SASL_SSL',
+    'sasl.mechanisms': 'PLAIN',
+    'sasl.username': os.getenv("CONFLUENT_API_KEY"),
+    'sasl.password': os.getenv("CONFLUENT_API_SECRET"),
     'group.id': 'cornery',
     'auto.offset.reset': 'earliest'
 }
@@ -9,11 +19,8 @@ kafka_config = {
 
 class KafkaService:
     """Initiate connection to Kafka and consume messages from a topic."""
-    __consumer: Consumer = None
-    __topic: str = None
-    __on_message: callable = None
 
-    def __init__(self, topic: str, on_message: callable) -> None:
+    def __init__(self, topic: str, on_message: Callable[[str], None]) -> None:
         """Initiate connection to Kafka and consume messages from a topic.
 
         Args:
@@ -35,8 +42,9 @@ class KafkaService:
             if msg.error():
                 print("Consumer error: {}".format(msg.error()))
                 continue
-            print('Received message: {}'.format(msg.value().decode('utf-8')))
-            self.__on_message(msg.value().decode('utf-8'))
+
+            message = msg.value().decode('utf-8')
+            self.__on_message(message)
 
     def close(self):
         self.__consumer.close()

@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "init"
+version = "1.0.0"
+description = ""
+authors = [ ]
+license = "Proprietary"
+readme = "README.md"
+
+  [tool.poetry.dependencies]
+  python = ">=3.8,<3.10"
+
+    [tool.poetry.dependencies.cornery]
+    path = "apps/services/cornery"
+    develop = true
+
+    [tool.poetry.dependencies.tcse]
+    path = "apps/services/tces"
+    develop = true
+
+[build-system]
+requires = [ "poetry-core==1.1.0" ]
+build-backend = "poetry.core.masonry.api"

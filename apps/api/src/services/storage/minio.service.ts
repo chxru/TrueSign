@@ -20,15 +20,14 @@ export class MinioService implements IStorageService {
     data: Buffer;
     directory: string;
     extension: string;
+    filename?: string;
   }): Promise<void> {
     const content = Buffer.from(props.data);
 
+    const name = props.filename || uuidv4() + '.' + props.extension;
+
     try {
-      await this.client.putObject(
-        props.directory,
-        uuidv4() + '.' + props.extension,
-        content
-      );
+      await this.client.putObject(props.directory, name, content);
     } catch (err) {
       console.log('Error in uploading minio', err);
       throw new Error('Error in uploading minio');
