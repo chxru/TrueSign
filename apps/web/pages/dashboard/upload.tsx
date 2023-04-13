@@ -1,4 +1,17 @@
-import { Box, Flex, Grid, GridItem, Image } from '@chakra-ui/react';
+import './upload.module.css';
+import {
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Image,
+  FormControl,
+  FormLabel,
+  Input,
+  Button,
+  Center,
+  Select,
+} from '@chakra-ui/react';
 import React, { useEffect, useRef, useState } from 'react';
 import Draggable, { DraggableData } from 'react-draggable';
 import { create } from 'zustand';
@@ -94,10 +107,73 @@ const Pointer = ({ position, parentSize }: PointProps) => {
           position: 'absolute',
           width: '10px',
           height: '10px',
-          backgroundColor: 'red',
+          backgroundColor: '#DF2E38',
         }}
       />
     </Draggable>
+  );
+};
+
+const Toolbox = () => {
+  return (
+    <Flex justify={'center'} align={'center'}>
+      <Box
+        flexDirection={'row'}
+        // boxShadow="inner"
+        // bgColor={'#F6F6F6'}
+        // borderColor={'#6096B4'}
+        // rounded="md"
+        // justifyContent={'center'}
+        width={'460px'}
+        height={'40px'}
+        margin={'7px'}
+      >
+        <Button
+          margin={'2px 5px 2px 60px'}
+          border={'2px'}
+          borderColor={'#6096B4'}
+          width={'65px'}
+        >
+          <Image
+            src="/clock.png"
+            alt="add image"
+            height={'30px'}
+            width={'30px'}
+          />
+        </Button>
+
+        <Button
+          marginTop={'2px'}
+          marginBottom={'2px'}
+          marginRight={'5px'}
+          border={'2px'}
+          borderColor={'#6096B4'}
+          width={'65px'}
+        >
+          <Image
+            src="/anticlock.png"
+            alt="add image"
+            height={'30px'}
+            width={'30px'}
+          />
+        </Button>
+
+        <Button
+          marginTop={'2px'}
+          marginBottom={'2px'}
+          marginLeft={'130px'}
+          border={'2px'}
+          borderColor={'#6096B4'}
+        >
+          <Image
+            src="/save.png"
+            alt="add image"
+            height={'30px'}
+            width={'30px'}
+          />
+        </Button>
+      </Box>
+    </Flex>
   );
 };
 
@@ -120,8 +196,21 @@ const Stage = () => {
   }, [parentRef, selectedImage]);
 
   return (
-    <Flex height={'100%'} justify={'center'} align={'center'}>
-      <Box ref={parentRef} position={'relative'}>
+    <Flex justify={'center'} align={'center'}>
+      <Box
+        boxShadow="inner"
+        bgColor={'#F6F6F6'}
+        borderColor={'#6096B4'}
+        rounded="md"
+        justifyContent={'center'}
+        ref={parentRef}
+        position={'relative'}
+        margin={'5px 15px 15px 15px'}
+        width={'460px'}
+        height={'570px'}
+        // border={'1px'}
+        // borderStyle={''}
+      >
         {image && (
           <>
             <Pointer position={image.border.topLeft} parentSize={parentSize} />
@@ -134,8 +223,14 @@ const Stage = () => {
               position={image.border.bottomRight}
               parentSize={parentSize}
             />
-
-            <Image src={image.url} alt={image.name} objectFit={'contain'} />
+            <Image
+              margin={'5px 5px 5px 5px'}
+              src={image.url}
+              alt={image.name}
+              objectFit={'contain'}
+              width={'450px'}
+              height={'550px'}
+            />
           </>
         )}
       </Box>
@@ -150,21 +245,39 @@ interface UploadBtnProps {
 const UploadBtn = (props: UploadBtnProps) => {
   const fileInput = useRef<HTMLInputElement>(null);
 
+  const styles = {
+    upldBtn: {
+      // backgroundColor: '#f1f1f1',
+      width: '180px',
+    },
+    footer: {},
+  };
+
   return (
     <Flex
-      width={'200px'}
-      height={'190px'}
+      direction={'column'}
+      bgColor={'#F5F5F5'}
+      rounded="md"
+      style={styles.upldBtn}
+      width={'180px'}
+      height={'210px'}
+      minHeight={'210px'}
       justify={'center'}
       align={'center'}
       border={'2px'}
+      borderStyle={'dashed'}
+      borderColor={'#6096B4'}
+      color={'#6096B4'}
       px={'25px'}
-      mx={'5px'}
+      mx={'auto'}
+      my={'auto'}
       cursor={'pointer'}
       onClick={() => {
         fileInput.current.click();
       }}
     >
-      Upload Image
+      <Image src="/upload.png" alt="add image" height={'40px'} />
+      Click to Upload
       <input
         ref={fileInput}
         type={'file'}
@@ -201,8 +314,10 @@ interface UploadThumbnailProps {
 const UploadThumbnail = (props: UploadThumbnailProps) => {
   return (
     <Flex
-      height={'190px'}
-      width={'200px'}
+      margin={'10px'}
+      width={'180px'}
+      height={'210px'}
+      minHeight={'210px'}
       justify={'center'}
       align={'center'}
       border={'2px'}
@@ -211,10 +326,20 @@ const UploadThumbnail = (props: UploadThumbnailProps) => {
       backgroundRepeat={'no-repeat'}
       backgroundSize={'cover'}
       backgroundPosition={'center'}
+      position={'relative'}
       onClick={() => {
         props.onClick(props.idx);
       }}
-    />
+    >
+      <Image
+        src="/remove.png"
+        alt="add image"
+        height={'20px'}
+        position={'absolute'}
+        right={'0px'}
+        top={'0px'}
+      />
+    </Flex>
   );
 };
 
@@ -224,9 +349,15 @@ const Footer = () => {
   const selectImage = useStore((state) => state.selectImage);
 
   return (
-    <Flex overflowX={'auto'} align={'center'} height={'100%'}>
+    <Flex
+      overflowY={'scroll'}
+      maxH="600px"
+      margin={'10px'}
+      flexDirection={'column'}
+      align={'center'}
+      // height={'100vh'}
+    >
       <UploadBtn onUpload={addImage} />
-
       {images.map((img, idx) => (
         <UploadThumbnail
           key={idx}
@@ -239,25 +370,83 @@ const Footer = () => {
   );
 };
 
+const Options = () => {
+  return (
+    <Center>
+      <FormControl isRequired margin={'20px'}>
+        <FormLabel>Module Name</FormLabel>
+        <Input
+          borderColor={'black'}
+          type="text"
+          placeholder="Enter module name"
+        />
+
+        <FormLabel>Number of Hours</FormLabel>
+        <Select borderColor={'black'} placeholder="Select number of hours">
+          <option value="1">1 Hour</option>
+          <option value="2">2 Hour</option>
+          <option value="3">3 Hour</option>
+          <option value="4">4 Hour</option>
+        </Select>
+
+        <FormLabel>Venue</FormLabel>
+        <Input borderColor={'black'} type="text" placeholder="Enter venue" />
+
+        <FormLabel>Date</FormLabel>
+        <Input borderColor={'black'} type="date" />
+
+        <Button mt={4} colorScheme="#FFFFFF" bg={'#6096B4'} type="submit">
+          Submit
+        </Button>
+      </FormControl>
+    </Center>
+  );
+};
+
+const Header = () => {
+  return <Image src="/logo.png" alt="add image" height={'68px'} />;
+};
+
 const UploadPage = () => {
   return (
     <Grid
-      templateAreas={`"nav main" "nav footer"`}
-      gridTemplateRows={'1fr 200px'}
-      gridTemplateColumns={'250px 1fr'}
+      templateAreas={`"header header" "nav footer" "nav main" "tool opt" `}
       h="100vh"
-      gap="1"
-      color="blackAlpha.700"
+      templateRows="repeat(12, 1fr)"
+      templateColumns="repeat(12, 1fr)"
+      gap={1}
       fontWeight="bold"
+      color="blackAlpha.700"
     >
-      <GridItem pl="2" bg="pink.300" area={'nav'}>
-        Nav
+      <GridItem rowSpan={1} colSpan={12} bg="#6096B4" area={'header'}>
+        <Header />
       </GridItem>
-      <GridItem area={'main'} px={'10px'}>
-        <Stage />
+
+      <GridItem rowSpan={11} colSpan={2} bg="#EEE9DA">
+        nav
       </GridItem>
-      <GridItem area={'footer'}>
+
+      <GridItem
+        rowSpan={11}
+        padding={'15px 15px 5px 5px'}
+        colSpan={2}
+        area={'footer'}
+      >
         <Footer />
+      </GridItem>
+
+      <GridItem rowSpan={11} colSpan={5}>
+        <GridItem rowSpan={1} colSpan={5} area={'tool'}>
+          <Toolbox />
+        </GridItem>
+
+        <GridItem rowSpan={10} colSpan={5} area={'main'}>
+          <Stage />
+        </GridItem>
+      </GridItem>
+
+      <GridItem rowSpan={11} colSpan={3} area={'opt'} bg="#d5e5ed">
+        <Options />
       </GridItem>
     </Grid>
   );
