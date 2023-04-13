@@ -1,3 +1,4 @@
+import { ImageStatus, UploadedImageModel } from '@truesign/mongo';
 import { Router } from 'express';
 import { IStorageService, MinioService } from '../services';
 
@@ -15,11 +16,20 @@ router.post('/upload', async (req, res) => {
   try {
     const storageService: IStorageService = new MinioService();
 
+    const doc = new UploadedImageModel({
+      filename: req.files.image.name,
+      path: `upload/${req.files.image.name}`,
+      status: ImageStatus.Unprocessed,
+    });
+
+    await doc.save();
+
     const extension = req.files.image.name.split('.').pop();
     await storageService.upload({
       data: req.files.image.data,
       directory: 'upload',
       extension,
+      filename: doc._id.toString() + '.' + extension,
     });
 
     res.sendStatus(200);
