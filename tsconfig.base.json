@@ -14,7 +14,11 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@truesign/frontend": ["packages/frontend-common/src/index.ts"],
+      "@truesign/mongo": ["packages/mongo-schema/src/index.ts"],
+      "@truesign/types": ["packages/types/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

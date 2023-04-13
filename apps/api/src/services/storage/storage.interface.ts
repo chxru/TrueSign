@@ -16,5 +16,10 @@ export interface IStorageService {
      * The file extension
      */
     extension: string;
+    /**
+     * The file name
+     * @default uuidv4 + extension
+     */
+    filename?: string;
   }): Promise<void>;
 }

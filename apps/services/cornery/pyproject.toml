@@ -3,7 +3,7 @@ branch = true
 source = [ "src" ]
 
 [tool.coverage.report]
-exclude_lines = ['if TYPE_CHECKING:']
+exclude_lines = [ "if TYPE_CHECKING:" ]
 show_missing = true
 
 [tool.pytest.ini_options]
@@ -14,20 +14,21 @@ name = "cornery"
 version = "1.0.0"
 description = "Detect corners of given image"
 authors = [ ]
-license = 'Proprietary'
-readme = 'README.md'
+license = "Proprietary"
+readme = "README.md"
 
   [[tool.poetry.packages]]
   include = "cornery"
+  from = "src"
 
   [tool.poetry.dependencies]
   python = ">=3.8,<3.10"
   confluent-kafka = "^2.0.2"
   minio = "^7.1.13"
   opencv-python = "^4.7.0.72"
-
-
+  python-dotenv = "^1.0.0"
+  pymongo = {extras = ["srv"], version = "^4.3.3"}
 
 [build-system]
-requires = ["poetry-core==1.1.0"]
+requires = [ "poetry-core==1.1.0" ]
 build-backend = "poetry.core.masonry.api"

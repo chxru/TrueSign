@@ -1,4 +1,9 @@
-import { Client } from 'minio';
+import {
+  Client,
+  NotificationConfig,
+  ObjectCreatedAll,
+  QueueConfig,
+} from 'minio';
 
 /**
  * Minio webhook body
@@ -34,6 +39,19 @@ const createBucket = async (bucket: string) => {
   }
 };
 
+const subscribeToKafka = async () => {
+  const arn = 'arn:minio:sqs::CONFLUENT:kafka';
+
+  const queue = new QueueConfig(arn);
+  queue.addEvent(ObjectCreatedAll);
+
+  const config = new NotificationConfig();
+  config.add(queue);
+
+  await client.setBucketNotification('upload', config);
+};
+
 export const initializeMinio = async () => {
   await Promise.all(buckets.map(createBucket));
+  await subscribeToKafka();
 };
