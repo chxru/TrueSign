@@ -98,9 +98,6 @@ const Pointer = ({ position, parentSize }: PointProps) => {
       onDrag={(e, data) => {
         onDrag(data);
       }}
-      onStop={(e, data) => {
-        console.log(data);
-      }}
     >
       <div
         style={{
@@ -117,17 +114,7 @@ const Pointer = ({ position, parentSize }: PointProps) => {
 const Toolbox = () => {
   return (
     <Flex justify={'center'} align={'center'}>
-      <Box
-        flexDirection={'row'}
-        // boxShadow="inner"
-        // bgColor={'#F6F6F6'}
-        // borderColor={'#6096B4'}
-        // rounded="md"
-        // justifyContent={'center'}
-        width={'460px'}
-        height={'40px'}
-        margin={'7px'}
-      >
+      <Box flexDirection={'row'} width={'460px'} height={'40px'} margin={'7px'}>
         <Button
           margin={'2px 5px 2px 60px'}
           border={'2px'}
@@ -208,8 +195,6 @@ const Stage = () => {
         margin={'5px 15px 15px 15px'}
         width={'460px'}
         height={'570px'}
-        // border={'1px'}
-        // borderStyle={''}
       >
         {image && (
           <>
@@ -247,7 +232,6 @@ const UploadBtn = (props: UploadBtnProps) => {
 
   const styles = {
     upldBtn: {
-      // backgroundColor: '#f1f1f1',
       width: '180px',
     },
     footer: {},
@@ -355,7 +339,6 @@ const Footer = () => {
       margin={'10px'}
       flexDirection={'column'}
       align={'center'}
-      // height={'100vh'}
     >
       <UploadBtn onUpload={addImage} />
       {images.map((img, idx) => (
