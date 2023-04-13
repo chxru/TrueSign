@@ -82,8 +82,8 @@ export function Index() {
                 <Field name="hours">
                   {({ field, form }) => (
                     <FormControl
-                      isRequired
                       isInvalid={form.errors.name && form.touched.name}
+                      isRequired
                     >
                       <FormLabel>Number of hours</FormLabel>
                       <Input {...field} type="number" />
