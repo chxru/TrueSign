@@ -9,253 +9,9 @@ import {
 import cv from 'opencv-ts';
 import { useState, useEffect, useRef } from 'react';
 import Draggable, { DraggableData } from 'react-draggable';
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-
-type coordinates = {
-  x: number;
-  y: number;
-};
-
-interface IBorders {
-  topLeft: coordinates;
-  topRight: coordinates;
-  bottomLeft: coordinates;
-  bottomRight: coordinates;
-}
-
-interface IUploadFile {
-  id?: number;
-  url: string;
-  name: string;
-  border: IBorders;
-  processed: boolean;
-}
-
-interface DashboardState {
-  counter: number;
-  images: Omit<IUploadFile, 'border'>[];
-  borders: {
-    id: number;
-    borders: IBorders;
-  }[];
-  selectedImageId: number | null;
-  addImage: (img: Omit<IUploadFile, 'border'>) => void;
-  updateBorders: (id: number, borders: IBorders) => void;
-  selectImageById: (id: number) => void;
-}
-
-const useStore = create<DashboardState>()(
-  devtools(
-    (set) => ({
-      counter: 0,
-      images: [],
-      borders: [],
-      selectedImageId: undefined,
-      addImage: (img: Omit<IUploadFile, 'border'>) => {
-        set((state) => ({
-          images: [...state.images, { ...img, id: state.counter }],
-          counter: state.counter + 1,
-          borders: [
-            ...state.borders,
-            {
-              id: state.counter,
-              borders: {
-                topLeft: {
-                  x: 0,
-                  y: 0,
-                },
-                topRight: {
-                  x: 0,
-                  y: 0,
-                },
-                bottomLeft: {
-                  x: 0,
-                  y: 0,
-                },
-                bottomRight: {
-                  x: 0,
-                  y: 0,
-                },
-              },
-            },
-          ],
-        }));
-      },
-      updateBorders: (id: number, borders: IBorders) => {
-        set((state) => ({
-          borders: state.borders.map((border) => {
-            if (border.id === id) {
-              return {
-                id,
-                borders,
-              };
-            }
-            return border;
-          }),
-          images: state.images.map((image) => {
-            if (image.id === id) {
-              return {
-                ...image,
-                processed: true,
-              };
-            }
-            return image;
-          }),
-        }));
-      },
-      selectImageById: (id: number) => {
-        set(() => ({
-          selectedImageId: id,
-        }));
-      },
-    }),
-    {
-      name: 'dashboard-state',
-      trace: true,
-    }
-  )
-);
-
-const DetectCorners = (): IBorders => {
-  const src = cv.imread('selected-image');
-  const dst = new cv.Mat();
-
-  // resize image
-  const rescaleSize = 500;
-  const dSize = new cv.Size(rescaleSize, rescaleSize);
-  cv.resize(src, dst, dSize, 0, 0, cv.INTER_AREA);
-
-  // convert to grayscale
-  cv.cvtColor(dst, dst, cv.COLOR_RGBA2GRAY, 0);
-
-  // gaussian blur
-  const kSize = new cv.Size(5, 5);
-  cv.GaussianBlur(src, dst, kSize, 0, 0, cv.BORDER_DEFAULT);
-
-  // canny edge detection
-  cv.Canny(src, dst, 50, 100);
-
-  // dilate
-  const M = new cv.Mat.ones(5, 5, cv.CV_8U);
-  const anchor = new cv.Point(-1, -1);
-  cv.dilate(
-    dst,
-    dst,
-    M,
-    anchor,
-    1,
-    cv.BORDER_CONSTANT,
-    cv.morphologyDefaultBorderValue()
-  );
-
-  // erode
-  cv.erode(
-    dst,
-    dst,
-    M,
-    anchor,
-    1,
-    cv.BORDER_CONSTANT,
-    cv.morphologyDefaultBorderValue()
-  );
-
-  // find contours
-  const contours = new cv.MatVector();
-  const hierarchy = new cv.Mat();
-  cv.findContours(
-    dst,
-    contours,
-    hierarchy,
-    cv.RETR_CCOMP,
-    cv.CHAIN_APPROX_SIMPLE
-  );
-
-  // get max area contour
-  let maxArea = 0;
-  let maxAreaIdx = 0;
-  for (let i = 0; i < contours.size(); i++) {
-    const cnt = contours.get(i);
-    const area = cv.contourArea(cnt, false);
-    if (area > maxArea) {
-      maxArea = area;
-      maxAreaIdx = i;
-    }
-  }
-
-  // get corners of the max area contour
-  const cnt = contours.get(maxAreaIdx);
-  const approx = new cv.Mat();
-  cv.approxPolyDP(cnt, approx, 0.02 * cv.arcLength(cnt, true), true);
-
-  // skip if not rectangle
-  if (approx.rows !== 4) {
-    src.delete();
-    dst.delete();
-    M.delete();
-    contours.delete();
-    hierarchy.delete();
-    approx.delete();
-
-    return {
-      topLeft: {
-        x: 0,
-        y: 0,
-      },
-      topRight: {
-        x: 0,
-        y: 0,
-      },
-      bottomLeft: {
-        x: 0,
-        y: 0,
-      },
-      bottomRight: {
-        x: 0,
-        y: 0,
-      },
-    };
-  }
-
-  // draw points on src image
-  const color = new cv.Scalar(0, 255, 0);
-  for (let i = 0; i < approx.rows; i++) {
-    const x = approx.data32S[i * 2];
-    const y = approx.data32S[i * 2 + 1];
-    cv.circle(src, new cv.Point(x, y), 3, color, 2);
-  }
-
-  const borders: IBorders = {
-    topLeft: {
-      x: approx.data32S[0],
-      y: approx.data32S[1],
-    },
-    topRight: {
-      x: approx.data32S[2],
-      y: approx.data32S[3],
-    },
-    bottomLeft: {
-      x: approx.data32S[4],
-      y: approx.data32S[5],
-    },
-    bottomRight: {
-      x: approx.data32S[6],
-      y: approx.data32S[7],
-    },
-  };
-
-  cv.imshow('selected-image', src);
-
-  src.delete();
-  dst.delete();
-  M.delete();
-  hierarchy.delete();
-  contours.delete();
-  approx.delete();
-  // approxScaled.delete();
-
-  return borders;
-};
+import { detectCorners } from '../../services/opencv';
+import { useScannerStore } from '../../store/scanner.store';
+import { coordinates, IUploadFile } from '../../types';
 
 interface PointProps {
   position: coordinates;
@@ -296,10 +52,10 @@ const Stage = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const parentRef = useRef<HTMLDivElement>(null);
 
-  const images = useStore((state) => state.images);
-  const borders = useStore((state) => state.borders);
-  const selectedImageId = useStore((state) => state.selectedImageId);
-  const updateBorders = useStore((state) => state.updateBorders);
+  const images = useScannerStore((state) => state.images);
+  const borders = useScannerStore((state) => state.borders);
+  const selectedImageId = useScannerStore((state) => state.selectedImageId);
+  const updateBorders = useScannerStore((state) => state.updateBorders);
 
   useEffect(() => {
     if (selectedImageId !== undefined) {
@@ -320,7 +76,7 @@ const Stage = () => {
         );
 
         if (!selectedImage.processed) {
-          const borders = DetectCorners();
+          const borders = detectCorners();
           updateBorders(selectedImageId, borders);
         }
       };
@@ -411,7 +167,7 @@ const Stage = () => {
 
 const Toolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const addImage = useStore((state) => state.addImage);
+  const addImage = useScannerStore((state) => state.addImage);
 
   const handleUpload = (files: FileList) => {
     Array.from(files).forEach((file) => {
@@ -453,8 +209,8 @@ const Toolbar = () => {
 };
 
 const Footer = () => {
-  const images = useStore((state) => state.images);
-  const selectImageById = useStore((state) => state.selectImageById);
+  const images = useScannerStore((state) => state.images);
+  const selectImageById = useScannerStore((state) => state.selectImageById);
 
   return (
     <Flex flexDirection={'row'} flexWrap={'nowrap'} overflowX={'auto'}>
