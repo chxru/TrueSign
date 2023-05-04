@@ -5,6 +5,7 @@ import {
   Grid,
   GridItem,
   Image as ChakraImage,
+  Stack,
 } from '@chakra-ui/react';
 import cv from 'opencv-ts';
 import { useState, useEffect, useRef } from 'react';
@@ -167,7 +168,10 @@ const Stage = () => {
 
 const Toolbar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const borders = useScannerStore((state) => state.borders);
+  const images = useScannerStore((state) => state.images);
   const addImage = useScannerStore((state) => state.addImage);
+  const selectedImageId = useScannerStore((state) => state.selectedImageId);
 
   const handleUpload = (files: FileList) => {
     Array.from(files).forEach((file) => {
@@ -175,14 +179,40 @@ const Toolbar = () => {
         url: URL.createObjectURL(file),
         name: file.name,
         processed: false,
+        file: file,
       };
 
       addImage(data);
     });
   };
 
+  const onConfirmCorners = async () => {
+    const formData = new FormData();
+    const selectedImage = images.find((image) => image.id === selectedImageId);
+    formData.append('image', selectedImage.file);
+    formData.append(
+      'borders',
+      JSON.stringify(borders[selectedImageId].borders)
+    );
+
+    const canvas = document.getElementById(
+      'selected-image'
+    ) as HTMLCanvasElement;
+    const width = canvas.width;
+    const height = canvas.height;
+    formData.append('resolution', `${width}x${height}`);
+
+    const response = await fetch('http://localhost:5000/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const data = await response.json();
+    console.log(data);
+  };
+
   return (
-    <>
+    <Stack direction={'row'} gap={4}>
       <input
         ref={inputRef}
         type="file"
@@ -204,7 +234,9 @@ const Toolbar = () => {
       >
         Upload Image
       </Button>
-    </>
+
+      <Button onClick={onConfirmCorners}>Confirm Corners</Button>
+    </Stack>
   );
 };
 

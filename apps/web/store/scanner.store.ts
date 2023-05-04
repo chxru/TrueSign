@@ -1,6 +1,19 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { DashboardState, IBorders, IUploadFile } from '../types';
+import { IBorders, IUploadFile } from '../types';
+
+interface DashboardState {
+  counter: number;
+  images: Omit<IUploadFile, 'border'>[];
+  borders: {
+    id: number;
+    borders: IBorders;
+  }[];
+  selectedImageId: number | null;
+  addImage: (img: Omit<IUploadFile, 'border'>) => void;
+  updateBorders: (id: number, borders: IBorders) => void;
+  selectImageById: (id: number) => void;
+}
 
 export const useScannerStore = create<DashboardState>()(
   devtools(
