@@ -16,17 +16,5 @@ export interface IUploadFile {
   name: string;
   border: IBorders;
   processed: boolean;
-}
-
-export interface DashboardState {
-  counter: number;
-  images: Omit<IUploadFile, 'border'>[];
-  borders: {
-    id: number;
-    borders: IBorders;
-  }[];
-  selectedImageId: number | null;
-  addImage: (img: Omit<IUploadFile, 'border'>) => void;
-  updateBorders: (id: number, borders: IBorders) => void;
-  selectImageById: (id: number) => void;
+  file: File;
 }
