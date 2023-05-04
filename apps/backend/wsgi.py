@@ -1,10 +1,12 @@
 import json
+import os
 import numpy as np
 import cv2
-from flask import Flask, jsonify, render_template, request
+from flask import Flask, jsonify, render_template, request,send_file
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-# from warp import warpImage
+from filter import useFilter
+from pdf import generatePDF
 
 app = Flask(__name__)
 CORS(app)
@@ -58,9 +60,33 @@ def warpImage(name, borders, resolution):
     except Exception as e:
         print(e)
 
+
+@app.post('/download')
+def download():
+    try:
+        filter = request.form['filter']
+        if (filter is None):
+            return jsonify({'message': 'no filter sent'}), 400
+
+        images = os.listdir('./outputs/processed')
+        if (len(images) == 0):
+            return jsonify({'message': 'no images to download'}), 400
+
+        filterFn = useFilter(filter)
+        for image in images:
+            print('./outputs/processed/' + image)
+            img = filterFn('./outputs/processed/' + image)
+            cv2.imwrite('./outputs/filtered/' + image, img)
+
+        pdfF = generatePDF()
+
+        # send the pdf file
+        return send_file(os.path.join(os.getcwd(), 'outputs', pdfF + '.pdf'), as_attachment=True)
+    except Exception as e:
+        return str(e), 500
+
 @app.post('/upload')
 def upload():
-    print("upload")
     try:
         borders = request.form['borders']
         borders = json.loads(borders)
