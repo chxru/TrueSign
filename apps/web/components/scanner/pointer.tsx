@@ -29,6 +29,7 @@ export const Pointer = ({ position, onDragEnd }: PointerProps) => {
           width: '10px',
           height: '10px',
           backgroundColor: '#DF2E38',
+          borderRadius: '50px',
         }}
       />
     </Draggable>
