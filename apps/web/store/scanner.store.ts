@@ -33,6 +33,7 @@ export const useScannerStore = create<DashboardState>()(
       addImage: (img: Omit<IScannerUploadImage, 'id'>) => {
         set((state) => ({
           images: [...state.images, { ...img, id: state.counter }],
+          selectedImageId: state.selectedImageId || state.counter,
           counter: state.counter + 1,
           borders: [
             ...state.borders,
