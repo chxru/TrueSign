@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,node,nextjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,node,nextjs
 
+/outputs/
+!/outputs/.gitkeep
+!/outputs/processed/.gitkeep
+
 ### NextJS ###
 # dependencies
 /node_modules
