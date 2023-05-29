@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import {
   IconButton,
   Avatar,
@@ -22,28 +22,24 @@ import {
   MenuItem,
   MenuList,
 } from '@chakra-ui/react';
-import { AiOutlineUserAdd } from 'react-icons/ai';
-import { FiHome, FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
+import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 import { IconType } from 'react-icons';
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/router';
+import { SidebarItem } from '@truesign/types';
 
-interface LinkItemProps {
-  name: string;
-  icon: IconType;
-  url: string;
+interface SidebarLayoutProps {
+  content: SidebarItem[];
+  children: ReactNode;
 }
 
-const LinkItems: Array<LinkItemProps> = [
-  { name: 'Home', icon: FiHome, url: '/' },
-  { name: 'Invite User', icon: AiOutlineUserAdd, url: '/invite' },
-];
-
-export const SidebarLayout = ({ children }: { children: ReactNode }) => {
+export const SidebarLayout = ({ content, children }: SidebarLayoutProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
     <Box minH="100vh">
       <SidebarContent
+        content={content}
         onClose={() => onClose}
         display={{ base: 'none', md: 'block' }}
       />
@@ -57,7 +53,7 @@ export const SidebarLayout = ({ children }: { children: ReactNode }) => {
         size="full"
       >
         <DrawerContent>
-          <SidebarContent onClose={onClose} />
+          <SidebarContent content={content} onClose={onClose} />
         </DrawerContent>
       </Drawer>
 
@@ -71,10 +67,11 @@ export const SidebarLayout = ({ children }: { children: ReactNode }) => {
 };
 
 interface SidebarProps extends BoxProps {
+  content: SidebarItem[];
   onClose: () => void;
 }
 
-const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
+const SidebarContent = ({ content, onClose, ...rest }: SidebarProps) => {
   return (
     <Box
       transition="3s ease"
@@ -92,7 +89,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
         </Text>
         <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
       </Flex>
-      {LinkItems.map((link) => (
+      {content.map((link) => (
         <NavItem key={link.name} icon={link.icon} url={link.url}>
           {link.name}
         </NavItem>
@@ -201,23 +198,25 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
               transition="all 0.3s"
               _focus={{ boxShadow: 'none' }}
             >
-              <HStack>
-                <Avatar size={'sm'} src={user.profileImageUrl} />
-                <VStack
-                  display={{ base: 'none', md: 'flex' }}
-                  alignItems="flex-start"
-                  spacing="1px"
-                  ml="2"
-                >
-                  <Text fontSize="sm">{user.fullName}</Text>
-                  <Text fontSize="xs" color="gray.600">
-                    Admin
-                  </Text>
-                </VStack>
-                <Box display={{ base: 'none', md: 'flex' }}>
-                  <FiChevronDown />
-                </Box>
-              </HStack>
+              {user && (
+                <HStack>
+                  <Avatar size={'sm'} src={user.profileImageUrl} />
+                  <VStack
+                    display={{ base: 'none', md: 'flex' }}
+                    alignItems="flex-start"
+                    spacing="1px"
+                    ml="2"
+                  >
+                    <Text fontSize="sm">{user.fullName}</Text>
+                    <Text fontSize="xs" color="gray.600">
+                      Admin
+                    </Text>
+                  </VStack>
+                  <Box display={{ base: 'none', md: 'flex' }}>
+                    <FiChevronDown />
+                  </Box>
+                </HStack>
+              )}
             </MenuButton>
             <MenuList
               bg={useColorModeValue('white', 'gray.900')}
