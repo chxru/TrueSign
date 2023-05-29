@@ -5,11 +5,11 @@ import {
   SignedIn,
   SignedOut,
 } from '@clerk/nextjs';
+import { AuthLayout } from '@truesign/frontend';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { SidebarLayout } from '../layouts/sidebar.layout';
-import { SuperAdminAllow } from '../layouts/superadmin.layout';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
 const isPublicPage = (path: string) => publicPages.includes(path);
@@ -31,11 +31,11 @@ function CustomApp({ Component, pageProps }: AppProps) {
             ) : (
               <>
                 <SignedIn>
-                  <SuperAdminAllow>
+                  <AuthLayout allowAdmin>
                     <SidebarLayout>
                       <Component {...pageProps} />
                     </SidebarLayout>
-                  </SuperAdminAllow>
+                  </AuthLayout>
                 </SignedIn>
                 <SignedOut>
                   <RedirectToSignIn redirectUrl="/sign-in" />
