@@ -2,7 +2,7 @@ import { Box, Button, Container, Heading, useToast } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { parse } from 'papaparse';
 import { Fetcher } from '@truesign/frontend';
-import { ICreateStudentRes } from '@truesign/types';
+import { ICreateStudentRes, IStudent } from '@truesign/types';
 
 export const ImportStudent = () => {
   const inputRef = useRef<HTMLInputElement>();
@@ -10,7 +10,7 @@ export const ImportStudent = () => {
 
   const handleInput = (files: FileList) => {
     const file = files[0];
-    parse(file, {
+    parse<IStudent>(file, {
       skipEmptyLines: true,
       header: true,
       complete: async (results) => {
@@ -28,7 +28,10 @@ export const ImportStudent = () => {
           const res = await Fetcher.post<ICreateStudentRes>(
             '/students/create',
             {
-              students: results.data,
+              students: results.data.map((r) => ({
+                ...r,
+                studentId: r.studentId.toLowerCase(),
+              })),
             }
           );
 
@@ -39,6 +42,12 @@ export const ImportStudent = () => {
                 res.data.reduce((a, b) => `${a}, ${b}`) +
                 ' failed to import due to duplicate student ids',
               status: 'warning',
+            });
+          } else {
+            toast({
+              title: 'Students created',
+              status: 'success',
+              isClosable: true,
             });
           }
         } catch (error) {

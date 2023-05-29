@@ -1,11 +1,11 @@
-interface Student {
+export interface IStudent {
   studentId: string;
   name: string;
   email: string;
 }
 
 export interface ICreateStudentsReqBody {
-  students: Student[];
+  students: IStudent[];
 }
 
 export type ICreateStudentRes =
