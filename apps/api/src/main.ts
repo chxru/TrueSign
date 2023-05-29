@@ -4,9 +4,13 @@ import express from 'express';
 import fileUpload from 'express-fileupload';
 import morgan from 'morgan';
 
+import { ClerkJWTValidator } from './middleware/clerk';
+
 // routes
 import imagesRouter from './controllers/images.controller';
 import invitesRouter from './controllers/invite.controller';
+
+dotenv.config();
 
 const app = express();
 
@@ -15,6 +19,9 @@ app.use(morgan('dev'));
 app.use(fileUpload());
 app.use(express.json());
 
+// custom clerk middleware
+app.use(ClerkJWTValidator);
+
 // routes
 app.use('/image', imagesRouter);
 app.use('/invites', invitesRouter);
@@ -22,8 +29,6 @@ app.use('/invites', invitesRouter);
 app.get('/healthcheck', (req, res) => {
   res.send({ status: 'ok' });
 });
-
-dotenv.config();
 
 const port = process.env.PORT || 3333;
 
