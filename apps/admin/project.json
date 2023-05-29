@@ -29,7 +29,8 @@
       "configurations": {
         "development": {
           "buildTarget": "admin:build:development",
-          "dev": true
+          "dev": true,
+          "port": 4201
         },
         "production": {
           "buildTarget": "admin:build:production",
