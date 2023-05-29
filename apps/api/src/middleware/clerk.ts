@@ -16,9 +16,29 @@ const JWKS = createRemoteJWKSet(new URL(process.env['CLERK_JWKS_ENDPOINT']));
 
 export const ClerkJWTValidator = async (req: ExpressRequest, res, next) => {
   try {
+    if (!req.headers.authorization) {
+      res.status(401).send({ message: 'Unauthorized' });
+    }
+
     const token = req.headers.authorization.split(' ')[1];
     if (!token) {
       res.status(401).send({ message: 'Unauthorized' });
+    }
+
+    // DEMO ONLY
+    if (token.startsWith('demo_key')) {
+      const userId = token.split('-')[1];
+
+      req.user = {
+        id: userId,
+        roles: {
+          staff: true,
+          student: true,
+          superAdmin: true,
+        },
+      };
+
+      return next();
     }
 
     const { payload: p } = await jwtVerify(token, JWKS, {
