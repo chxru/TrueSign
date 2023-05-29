@@ -2,14 +2,14 @@ import axios, { AxiosRequestConfig } from 'axios';
 
 export class Fetcher {
   private static axios = axios.create({
-    baseURL: '/api',
+    baseURL: 'http://localhost:3333',
   });
 
   /**
    * Update the axios instance with latest token
    * @param token new access token
    */
-  public static setToken(token: string) {
+  public static setToken(token: string | null) {
     this.axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   }
 
