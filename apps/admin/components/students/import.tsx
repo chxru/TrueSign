@@ -1,4 +1,4 @@
-import { Box, Button, Container, Heading } from '@chakra-ui/react';
+import { Box, Button, Container, Heading, useToast } from '@chakra-ui/react';
 import { useRef } from 'react';
 import { parse } from 'papaparse';
 import { Fetcher } from '@truesign/frontend';
@@ -6,6 +6,7 @@ import { ICreateStudentRes } from '@truesign/types';
 
 export const ImportStudent = () => {
   const inputRef = useRef<HTMLInputElement>();
+  const toast = useToast();
 
   const handleInput = (files: FileList) => {
     const file = files[0];
@@ -14,6 +15,11 @@ export const ImportStudent = () => {
       header: true,
       complete: async (results) => {
         if (results.errors.length) {
+          toast({
+            title: 'Cannot parse CSV',
+            status: 'error',
+          });
+
           console.warn(results.errors);
           return;
         }
@@ -27,10 +33,28 @@ export const ImportStudent = () => {
           );
 
           if (typeof res === 'object') {
-            console.warn(res.message, res.data);
+            toast({
+              title: 'Few imports failed',
+              description:
+                res.data.reduce((a, b) => `${a}, ${b}`) +
+                ' failed to import due to duplicate student ids',
+              status: 'warning',
+            });
           }
         } catch (error) {
-          console.error(error);
+          if (error instanceof Error) {
+            toast({
+              title: 'Error occurred while creating student',
+              description: error.message,
+              status: 'error',
+            });
+          } else {
+            toast({
+              title: 'Unknown error occurred while creating students',
+              description: 'Check console or contact admin',
+              status: 'error',
+            });
+          }
         }
       },
     });

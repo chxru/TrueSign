@@ -7,6 +7,7 @@ import {
   FormLabel,
   Heading,
   Input,
+  useToast,
 } from '@chakra-ui/react';
 import { Fetcher } from '@truesign/frontend';
 import { ICreateStudentRes } from '@truesign/types';
@@ -23,6 +24,7 @@ const validationSchema = toFormikValidationSchema(schema);
 type formType = z.infer<typeof schema>;
 
 export const AddNewStudent = () => {
+  const toast = useToast();
   const formik = useFormik<formType>({
     initialValues: {
       email: '',
@@ -37,12 +39,37 @@ export const AddNewStudent = () => {
         });
 
         if (typeof res === 'object') {
-          console.warn(res.message, res.data);
+          toast({
+            title: 'Few imports failed',
+            description:
+              res.data.reduce((a, b) => `${a}, ${b}`) +
+              ' failed to import due to duplicate student ids',
+            status: 'warning',
+          });
+
+          return;
         }
 
+        toast({
+          title: 'Student created',
+          status: 'success',
+          isClosable: true,
+        });
         actions.resetForm();
       } catch (error) {
-        console.error(error);
+        if (error instanceof Error) {
+          toast({
+            title: 'Error occurred while creating student',
+            description: error.message,
+            status: 'error',
+          });
+        } else {
+          toast({
+            title: 'Unknown error occurred while creating students',
+            description: 'Check console or contact admin',
+            status: 'error',
+          });
+        }
       }
     },
   });
