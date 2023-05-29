@@ -5,14 +5,21 @@ import {
   SignedIn,
   SignedOut,
 } from '@clerk/nextjs';
-import { AuthLayout } from '@truesign/frontend';
+import { AuthLayout, SidebarLayout } from '@truesign/frontend';
+import { SidebarItem } from '@truesign/types';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { SidebarLayout } from '../layouts/sidebar.layout';
+import { AiOutlineUserAdd } from 'react-icons/ai';
+import { FiHome } from 'react-icons/fi';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
 const isPublicPage = (path: string) => publicPages.includes(path);
+
+const sidebarItems: SidebarItem[] = [
+  { name: 'Home', icon: FiHome, url: '/' },
+  { name: 'Invite User', icon: AiOutlineUserAdd, url: '/invite' },
+];
 
 function CustomApp({ Component, pageProps }: AppProps) {
   const { pathname } = useRouter();
@@ -32,7 +39,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
               <>
                 <SignedIn>
                   <AuthLayout allowAdmin>
-                    <SidebarLayout>
+                    <SidebarLayout content={sidebarItems}>
                       <Component {...pageProps} />
                     </SidebarLayout>
                   </AuthLayout>
