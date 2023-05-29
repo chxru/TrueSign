@@ -17,6 +17,7 @@
     "express-fileupload": "^1.4.0",
     "formik": "^2.2.9",
     "framer-motion": "^10.0.1",
+    "jose": "^4.14.4",
     "kafkajs": "^2.2.4",
     "minio": "^7.0.32",
     "mongoose": "^7.0.3",
