@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { FiHome } from 'react-icons/fi';
+import { GrUserWorker } from 'react-icons/gr';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
 const isPublicPage = (path: string) => publicPages.includes(path);
@@ -19,6 +20,7 @@ const isPublicPage = (path: string) => publicPages.includes(path);
 const sidebarItems: SidebarItem[] = [
   { name: 'Home', icon: FiHome, url: '/' },
   { name: 'Invite User', icon: AiOutlineUserAdd, url: '/invite' },
+  { name: 'Students', icon: GrUserWorker, url: '/students' },
 ];
 
 function CustomApp({ Component, pageProps }: AppProps) {
