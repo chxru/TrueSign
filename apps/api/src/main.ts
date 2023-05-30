@@ -9,6 +9,7 @@ import { ClerkJWTValidator } from './middleware/clerk';
 // routes
 import imagesRouter from './controllers/images.controller';
 import invitesRouter from './controllers/invite.controller';
+import modulesRouter from './controllers/modules.controller';
 import studentRouter from './controllers/students.controller';
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(ClerkJWTValidator);
 // routes
 app.use('/image', imagesRouter);
 app.use('/invites', invitesRouter);
+app.use('/modules', modulesRouter);
 app.use('/students', studentRouter);
 
 app.get('/healthcheck', (req, res) => {
