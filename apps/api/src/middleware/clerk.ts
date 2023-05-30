@@ -1,5 +1,6 @@
 import { ExpressRequest } from '@truesign/types';
 import { createRemoteJWKSet, jwtVerify, JWTPayload } from 'jose';
+import { Types } from 'mongoose';
 
 // only few are mentioned here
 interface CustomJWTPayload extends JWTPayload {
@@ -31,6 +32,7 @@ export const ClerkJWTValidator = async (req: ExpressRequest, res, next) => {
 
       req.user = {
         id: userId,
+        mongoId: new Types.ObjectId(userId),
         roles: {
           staff: true,
           student: true,
@@ -48,6 +50,7 @@ export const ClerkJWTValidator = async (req: ExpressRequest, res, next) => {
 
     req.user = {
       id: payload.internal_id,
+      mongoId: new Types.ObjectId(payload.internal_id),
       roles: {
         staff: payload.metadata.isStaff,
         student: payload.metadata.isStudent,
