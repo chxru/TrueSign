@@ -46,3 +46,38 @@ export const CreateModule = async (
 
   res.sendStatus(201);
 };
+
+export const GetMyModules = async (
+  req: ExpressRequest,
+  res: ExpressResponse
+) => {
+  // validate request has a user
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  // get modules
+  const modules = await ModuleModel.find({
+    coordinator: req.user.mongoId,
+  });
+
+  res.send(modules);
+};
+
+export const GetModule = async (req: ExpressRequest, res: ExpressResponse) => {
+  // validate request has a user
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  // get module
+  const module = await ModuleModel.findOne({
+    moduleId: req.params.id.toLowerCase(),
+  });
+
+  if (!module) {
+    return res.sendStatus(404);
+  }
+
+  res.send(module);
+};
