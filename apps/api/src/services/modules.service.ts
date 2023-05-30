@@ -3,6 +3,7 @@ import {
   ExpressRequest,
   ExpressResponse,
   ICreateModuleReq,
+  IGetModulesRes,
 } from '@truesign/types';
 
 export const CreateModule = async (
@@ -49,7 +50,7 @@ export const CreateModule = async (
 
 export const GetMyModules = async (
   req: ExpressRequest,
-  res: ExpressResponse
+  res: ExpressResponse<IGetModulesRes>
 ) => {
   // validate request has a user
   if (!req.user) {
@@ -61,10 +62,26 @@ export const GetMyModules = async (
     coordinator: req.user.mongoId,
   });
 
-  res.send(modules);
+  const result: IGetModulesRes = {
+    modules: [],
+  };
+
+  for (const module of modules) {
+    result.modules.push({
+      id: module._id.toString(),
+      moduleId: module.moduleId,
+      name: module.name,
+      coordinator: module.coordinator.toString(),
+    });
+  }
+
+  res.send(result);
 };
 
-export const GetModule = async (req: ExpressRequest, res: ExpressResponse) => {
+export const GetModule = async (
+  req: ExpressRequest,
+  res: ExpressResponse<IGetModulesRes>
+) => {
   // validate request has a user
   if (!req.user) {
     return res.sendStatus(401);
@@ -79,5 +96,14 @@ export const GetModule = async (req: ExpressRequest, res: ExpressResponse) => {
     return res.sendStatus(404);
   }
 
-  res.send(module);
+  res.send({
+    modules: [
+      {
+        id: module._id.toString(),
+        moduleId: module.moduleId,
+        name: module.name,
+        coordinator: module.coordinator.toString(),
+      },
+    ],
+  });
 };
