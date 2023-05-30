@@ -17,7 +17,7 @@ export class Fetcher {
    * Send get request to the API
    */
   public static get<T>(url: string, config?: AxiosRequestConfig) {
-    this.axios.get<T>(url, config).then((res) => res.data);
+    return this.axios.get<T>(url, config).then((res) => res.data);
   }
 
   /**
