@@ -20,10 +20,12 @@ export const AuthLayout = (props: AuthLayoutProps) => {
   const { user } = useUser();
   const { session } = useClerk();
   const [state, setState] = useState<AuthState>(AuthState.LOADING);
+  const [tokenLoaded, setTokenLoaded] = useState(false);
 
   const generateToken = async () => {
     const token = await session?.getToken({ template: 'default' });
     Fetcher.setToken(token || null);
+    setTokenLoaded(true);
 
     if (token) {
       try {
@@ -83,7 +85,7 @@ export const AuthLayout = (props: AuthLayoutProps) => {
     };
   }, [user]);
 
-  if (state === AuthState.LOADING) {
+  if (state === AuthState.LOADING || !tokenLoaded) {
     return <h1>Loading...</h1>;
   }
 
