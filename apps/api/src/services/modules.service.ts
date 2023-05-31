@@ -8,6 +8,35 @@ import {
   IGetModulesRes,
 } from '@truesign/types';
 
+const sortStudentIds = (ids: string[]) => {
+  // id has the format of {faculty}/{year}/{number}
+  // sort by faculty, then year, then number
+  return ids.sort((a, b) => {
+    const [aFaculty, aYear, aNumber] = a.split('/');
+    const [bFaculty, bYear, bNumber] = b.split('/');
+
+    if (aFaculty < bFaculty) {
+      return -1;
+    } else if (aFaculty > bFaculty) {
+      return 1;
+    } else {
+      if (aYear < bYear) {
+        return -1;
+      } else if (aYear > bYear) {
+        return 1;
+      } else {
+        if (aNumber < bNumber) {
+          return -1;
+        } else if (aNumber > bNumber) {
+          return 1;
+        } else {
+          return 0;
+        }
+      }
+    }
+  });
+};
+
 export const CreateModule = async (
   req: ExpressRequest<ICreateModuleReq>,
   res: ExpressResponse
@@ -69,14 +98,16 @@ export const GetMyModules = async (
   };
 
   for (const module of modules) {
+    const ids = (module.students as unknown as { studentId: string }[]).map(
+      (s) => s.studentId
+    );
+
     result.modules.push({
       id: module._id.toString(),
       moduleId: module.moduleId,
       name: module.name,
       coordinator: module.coordinator.toString(),
-      studentIds: (module.students as unknown as { studentId: string }[]).map(
-        (s) => s.studentId
-      ),
+      studentIds: sortStudentIds(ids),
     });
   }
 
@@ -101,6 +132,10 @@ export const GetModule = async (
     return res.sendStatus(404);
   }
 
+  const ids = (module.students as unknown as { studentId: string }[]).map(
+    (s) => s.studentId
+  );
+
   res.send({
     modules: [
       {
@@ -108,9 +143,7 @@ export const GetModule = async (
         moduleId: module.moduleId,
         name: module.name,
         coordinator: module.coordinator.toString(),
-        studentIds: (module.students as unknown as { studentId: string }[]).map(
-          (s) => s.studentId
-        ),
+        studentIds: sortStudentIds(ids),
       },
     ],
   });
