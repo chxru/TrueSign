@@ -4,6 +4,7 @@ interface IModule {
   moduleId: string;
   name: string;
   coordinator: Types.ObjectId;
+  students: Types.ObjectId[];
 }
 
 const moduleSchema = new Schema<IModule>(
@@ -23,6 +24,12 @@ const moduleSchema = new Schema<IModule>(
       ref: 'User',
       required: true,
     },
+    students: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Student',
+      },
+    ],
   },
   {
     timestamps: true,

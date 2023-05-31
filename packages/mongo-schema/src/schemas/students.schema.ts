@@ -1,9 +1,10 @@
-import { model, Schema } from 'mongoose';
+import { model, Schema, Types } from 'mongoose';
 
 interface IStudent {
   studentId: string;
   name: string;
   email: string;
+  modules: Types.ObjectId[];
 }
 
 const studentsSchema = new Schema<IStudent>(
@@ -22,6 +23,12 @@ const studentsSchema = new Schema<IStudent>(
       type: String,
       required: true,
     },
+    modules: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Module',
+      },
+    ],
   },
   {
     timestamps: true,
