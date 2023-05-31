@@ -12,6 +12,7 @@ import {
   IGetModulesRes,
   IStudent,
 } from '@truesign/types';
+import { GenerateAttendanceSheet } from '../../services/pdf';
 import { parse } from 'papaparse';
 import { useEffect, useRef } from 'react';
 import useSWR from 'swr';
@@ -19,6 +20,7 @@ import useSWR from 'swr';
 interface CardProps {
   name: string;
   id: string;
+  students: string[];
 }
 
 const Card = (props: CardProps) => {
@@ -85,13 +87,20 @@ const Card = (props: CardProps) => {
     });
   };
 
+  const handleAttendanceSheetGen = async () => {
+    await GenerateAttendanceSheet(props.name, props.id, props.students);
+  };
+
   return (
     <Container shadow={'sm'} px={2} py={4} rounded={'xl'}>
       <Text fontSize={'xl'}>{props.name}</Text>
       <Text>{props.id}</Text>
+      <Text>{props.students.length} students</Text>
 
       <HStack mt={4}>
-        <Button>Generate Attendance Sheet</Button>
+        <Button onClick={handleAttendanceSheetGen}>
+          Generate Attendance Sheet
+        </Button>
         <Button onClick={() => inputRef.current.click()}>
           Import Students
         </Button>
@@ -143,7 +152,12 @@ export const ViewModules = () => {
 
       {data &&
         data.modules.map((module) => (
-          <Card key={module.id} name={module.name} id={module.moduleId} />
+          <Card
+            key={module.id}
+            name={module.name}
+            id={module.moduleId}
+            students={module.studentIds}
+          />
         ))}
     </Container>
   );
