@@ -11,3 +11,14 @@ export interface IGetModulesRes {
     coordinator: string;
   }[];
 }
+
+export interface IAddStudentsToModuleReq {
+  students: string[];
+}
+
+export type IAddStudentsToModuleRes =
+  | {
+      message: string;
+      data: string[];
+    }
+  | string;
