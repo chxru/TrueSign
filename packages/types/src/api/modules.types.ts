@@ -9,6 +9,7 @@ export interface IGetModulesRes {
     moduleId: string;
     name: string;
     coordinator: string;
+    studentIds: string[];
   }[];
 }
 

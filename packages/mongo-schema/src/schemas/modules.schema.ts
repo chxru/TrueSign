@@ -27,7 +27,7 @@ const moduleSchema = new Schema<IModule>(
     students: [
       {
         type: Schema.Types.ObjectId,
-        ref: 'Student',
+        ref: 'Students',
       },
     ],
   },
