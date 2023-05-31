@@ -62,7 +62,7 @@ export const GetMyModules = async (
   // get modules
   const modules = await ModuleModel.find({
     coordinator: req.user.mongoId,
-  });
+  }).populate('students', 'studentId');
 
   const result: IGetModulesRes = {
     modules: [],
@@ -74,6 +74,9 @@ export const GetMyModules = async (
       moduleId: module.moduleId,
       name: module.name,
       coordinator: module.coordinator.toString(),
+      studentIds: (module.students as unknown as { studentId: string }[]).map(
+        (s) => s.studentId
+      ),
     });
   }
 
@@ -92,7 +95,7 @@ export const GetModule = async (
   // get module
   const module = await ModuleModel.findOne({
     moduleId: req.params.id.toLowerCase(),
-  });
+  }).populate('students', 'studentId');
 
   if (!module) {
     return res.sendStatus(404);
@@ -105,6 +108,9 @@ export const GetModule = async (
         moduleId: module.moduleId,
         name: module.name,
         coordinator: module.coordinator.toString(),
+        studentIds: (module.students as unknown as { studentId: string }[]).map(
+          (s) => s.studentId
+        ),
       },
     ],
   });
