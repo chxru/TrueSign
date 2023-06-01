@@ -1,4 +1,5 @@
 import { MongoDBConnect } from '@truesign/mongo';
+import cors from "cors";
 import * as dotenv from 'dotenv';
 import express from 'express';
 import fileUpload from 'express-fileupload';
@@ -17,6 +18,7 @@ dotenv.config();
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(morgan('dev'));
 app.use(fileUpload());
 app.use(express.json());
