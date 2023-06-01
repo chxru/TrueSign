@@ -1,4 +1,5 @@
 import { MongoDBConnect } from '@truesign/mongo';
+import cors from "cors";
 import * as dotenv from 'dotenv';
 import express from 'express';
 import fileUpload from 'express-fileupload';
@@ -10,6 +11,7 @@ import { ClerkJWTValidator } from './middleware/clerk';
 import imagesRouter from './controllers/images.controller';
 import invitesRouter from './controllers/invite.controller';
 import modulesRouter from './controllers/modules.controller';
+
 import studentRouter from './controllers/students.controller';
 
 dotenv.config();
@@ -17,6 +19,7 @@ dotenv.config();
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(morgan('dev'));
 app.use(fileUpload());
 app.use(express.json());
