@@ -11,7 +11,6 @@ import { ClerkJWTValidator } from './middleware/clerk';
 import imagesRouter from './controllers/images.controller';
 import invitesRouter from './controllers/invite.controller';
 import modulesRouter from './controllers/modules.controller';
-
 import studentRouter from './controllers/students.controller';
 
 dotenv.config();
