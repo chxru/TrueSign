@@ -1,8 +1,4 @@
 {
-    "editor.formatOnSave": true,
-    "python.analysis.extraPaths": [
-        "./apps/services/cornery/src/cornery"
-    ],
-    "python.analysis.typeCheckingMode": "basic",
-    "typescript.tsdk": "node_modules\\typescript\\lib"
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib"
 }
