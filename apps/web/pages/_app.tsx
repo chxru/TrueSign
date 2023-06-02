@@ -11,6 +11,7 @@ import { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { AiOutlineScan } from 'react-icons/ai';
+import { BiBookOpen } from 'react-icons/bi';
 import { FiHome } from 'react-icons/fi';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
@@ -19,6 +20,7 @@ const isPublicPage = (path: string) => publicPages.includes(path);
 const sidebarItems: SidebarItem[] = [
   { name: 'Home', icon: FiHome, url: '/' },
   { name: 'Scan', icon: AiOutlineScan, url: '/dashboard/scan' },
+  { name: 'Module', icon: BiBookOpen, url: '/modules' },
 ];
 
 function CustomApp({ Component, pageProps }: AppProps) {
