@@ -1,5 +1,5 @@
+import { IBorders } from '@truesign/types';
 import cv from 'opencv-ts';
-import { IBorders } from '../types';
 
 export const detectCorners = (): IBorders => {
   const src = cv.imread('selected-image');
