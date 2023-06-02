@@ -109,24 +109,64 @@ export const detectCorners = (): IBorders => {
     cv.circle(src, new cv.Point(x, y), 3, color, 2);
   }
 
-  const borders: IBorders = {
-    topLeft: {
-      x: approx.data32S[0],
-      y: approx.data32S[1],
-    },
-    topRight: {
-      x: approx.data32S[2],
-      y: approx.data32S[3],
-    },
-    bottomLeft: {
-      x: approx.data32S[4],
-      y: approx.data32S[5],
-    },
-    bottomRight: {
-      x: approx.data32S[6],
-      y: approx.data32S[7],
-    },
+  const corner1 = {
+    x: approx.data32S[0],
+    y: approx.data32S[1],
   };
+
+  const corner2 = {
+    x: approx.data32S[2],
+    y: approx.data32S[3],
+  };
+
+  const corner3 = {
+    x: approx.data32S[4],
+    y: approx.data32S[5],
+  };
+
+  const corner4 = {
+    x: approx.data32S[6],
+    y: approx.data32S[7],
+  };
+
+  const tempBorders = {};
+
+  // sort corners
+  if (corner1.x < corner2.x) {
+    if (corner1.y < corner2.y) {
+      tempBorders['topLeft'] = corner1;
+      tempBorders['topRight'] = corner2;
+    } else {
+      tempBorders['bottomLeft'] = corner1;
+      tempBorders['bottomRight'] = corner2;
+    }
+  } else {
+    if (corner1.y < corner2.y) {
+      tempBorders['topLeft'] = corner2;
+      tempBorders['topRight'] = corner1;
+    } else {
+      tempBorders['bottomLeft'] = corner2;
+      tempBorders['bottomRight'] = corner1;
+    }
+  }
+
+  if (corner3.x < corner4.x) {
+    if (corner3.y < corner4.y) {
+      tempBorders['topLeft'] = corner3;
+      tempBorders['topRight'] = corner4;
+    } else {
+      tempBorders['bottomLeft'] = corner3;
+      tempBorders['bottomRight'] = corner4;
+    }
+  } else {
+    if (corner3.y < corner4.y) {
+      tempBorders['topLeft'] = corner4;
+      tempBorders['topRight'] = corner3;
+    } else {
+      tempBorders['bottomLeft'] = corner4;
+      tempBorders['bottomRight'] = corner3;
+    }
+  }
 
   cv.imshow('selected-image', src);
 
@@ -136,7 +176,31 @@ export const detectCorners = (): IBorders => {
   hierarchy.delete();
   contours.delete();
   approx.delete();
-  // approxScaled.delete();
+
+  // make the borders position independent of the canvas size by
+  // making width and height vary between 0-1
+  const canvas = document.getElementById('selected-image') as HTMLCanvasElement;
+  const width = canvas.width;
+  const height = canvas.height;
+
+  const borders: IBorders = {
+    topLeft: {
+      x: tempBorders['topLeft'].x / width,
+      y: tempBorders['topLeft'].y / height,
+    },
+    topRight: {
+      x: tempBorders['topRight'].x / width,
+      y: tempBorders['topRight'].y / height,
+    },
+    bottomLeft: {
+      x: tempBorders['bottomLeft'].x / width,
+      y: tempBorders['bottomLeft'].y / height,
+    },
+    bottomRight: {
+      x: tempBorders['bottomRight'].x / width,
+      y: tempBorders['bottomRight'].y / height,
+    },
+  };
 
   return borders;
 };
