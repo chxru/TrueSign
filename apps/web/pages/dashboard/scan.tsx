@@ -1,9 +1,10 @@
 import { Grid, GridItem } from '@chakra-ui/react';
 import cv from 'opencv-ts';
-import { useEffect, useState } from 'react';
-import { Footer, Stage, Toolbar } from '../../components/scanner/';
+import { useEffect, useRef, useState } from 'react';
+import { Footer, ScannerSidebar, Stage } from '../../components/scanner/';
 
 const UploadPage = () => {
+  const subGridRef = useRef<HTMLDivElement>();
   const [cvLoaded, setCvLoaded] = useState(false);
   cv.onRuntimeInitialized = () => {
     setCvLoaded(true);
@@ -33,12 +34,16 @@ const UploadPage = () => {
   }
 
   return (
-    <Grid templateRows={'5fr 50px 1fr'} height={'100vh'}>
+    <Grid templateRows={'5fr 1fr'} height={'calc(100vh - 80px)'}>
       <GridItem>
-        <Stage />
-      </GridItem>
-      <GridItem>
-        <Toolbar />
+        <Grid ref={subGridRef} templateColumns={'3fr 1fr'} height={'100%'}>
+          <GridItem>
+            <Stage />
+          </GridItem>
+          <GridItem height={'100%'}>
+            <ScannerSidebar />
+          </GridItem>
+        </Grid>
       </GridItem>
       <GridItem>
         <Footer />

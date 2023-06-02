@@ -1,3 +1,4 @@
+export * from './attendance.schema';
 export * from './image.schema';
 export * from './invites.schema';
 export * from './modules.schema';
