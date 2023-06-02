@@ -87,16 +87,16 @@ export const detectCorners = (): IBorders => {
         y: 0,
       },
       topRight: {
-        x: 0,
+        x: 1,
         y: 0,
       },
       bottomLeft: {
         x: 0,
-        y: 0,
+        y: 1,
       },
       bottomRight: {
-        x: 0,
-        y: 0,
+        x: 1,
+        y: 1,
       },
     };
   }
@@ -131,41 +131,25 @@ export const detectCorners = (): IBorders => {
 
   const tempBorders = {};
 
-  // sort corners
-  if (corner1.x < corner2.x) {
-    if (corner1.y < corner2.y) {
-      tempBorders['topLeft'] = corner1;
-      tempBorders['topRight'] = corner2;
-    } else {
-      tempBorders['bottomLeft'] = corner1;
-      tempBorders['bottomRight'] = corner2;
-    }
+  // get the left most corners
+  const [p, q, r, s] = [corner1, corner2, corner3, corner4].sort(
+    (a, b) => a.x - b.x
+  );
+
+  if (p.y < q.y) {
+    tempBorders['topLeft'] = p;
+    tempBorders['bottomLeft'] = q;
   } else {
-    if (corner1.y < corner2.y) {
-      tempBorders['topLeft'] = corner2;
-      tempBorders['topRight'] = corner1;
-    } else {
-      tempBorders['bottomLeft'] = corner2;
-      tempBorders['bottomRight'] = corner1;
-    }
+    tempBorders['topLeft'] = q;
+    tempBorders['bottomLeft'] = p;
   }
 
-  if (corner3.x < corner4.x) {
-    if (corner3.y < corner4.y) {
-      tempBorders['topLeft'] = corner3;
-      tempBorders['topRight'] = corner4;
-    } else {
-      tempBorders['bottomLeft'] = corner3;
-      tempBorders['bottomRight'] = corner4;
-    }
+  if (r.y < s.y) {
+    tempBorders['topRight'] = r;
+    tempBorders['bottomRight'] = s;
   } else {
-    if (corner3.y < corner4.y) {
-      tempBorders['topLeft'] = corner4;
-      tempBorders['topRight'] = corner3;
-    } else {
-      tempBorders['bottomLeft'] = corner4;
-      tempBorders['bottomRight'] = corner3;
-    }
+    tempBorders['topRight'] = s;
+    tempBorders['bottomRight'] = r;
   }
 
   cv.imshow('selected-image', src);
