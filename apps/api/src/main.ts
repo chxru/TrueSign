@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import { ClerkJWTValidator } from './middleware/clerk';
 
 // routes
+import attendanceRouter from './controllers/attendance.controller';
 import imagesRouter from './controllers/images.controller';
 import invitesRouter from './controllers/invite.controller';
 import modulesRouter from './controllers/modules.controller';
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(ClerkJWTValidator);
 
 // routes
+app.use('/attendance', attendanceRouter);
 app.use('/image', imagesRouter);
 app.use('/invites', invitesRouter);
 app.use('/modules', modulesRouter);
