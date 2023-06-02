@@ -28,7 +28,17 @@ export const Pointer = ({ position, onDragEnd }: PointerProps) => {
     const x = data.x;
     const y = data.y;
 
-    onDragEnd(x, y);
+    // make x,y relative to canvas
+    const canvas = document.getElementById(
+      'selected-image'
+    ) as HTMLCanvasElement;
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const xRelative = x / width;
+    const yRelative = y / height;
+
+    onDragEnd(xRelative, yRelative);
   };
 
   return (
