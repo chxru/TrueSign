@@ -1,6 +1,6 @@
 export interface IStorageService {
   /**
-   * Upload object to storage
+   * Upload object to storage, returns the path of the object
    * @param props
    */
   upload(props: {
@@ -21,5 +21,5 @@ export interface IStorageService {
      * @default uuidv4 + extension
      */
     filename?: string;
-  }): Promise<void>;
+  }): Promise<string>;
 }
