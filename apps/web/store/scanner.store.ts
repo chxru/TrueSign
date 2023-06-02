@@ -1,6 +1,6 @@
+import { IBorders } from '@truesign/types';
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { IBorders } from '../types';
 
 export interface IScannerUploadImage {
   id: number;
