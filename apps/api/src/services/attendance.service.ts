@@ -76,6 +76,7 @@ export const AddImagesToAttendance = async (
       data: req.files.image.data,
       directory: `uploads/attendance/${req.params.sessionId}`,
       extension,
+      filename: page.toString(),
     });
 
     const attendance = await AttendanceModel.findById(
@@ -86,16 +87,19 @@ export const AddImagesToAttendance = async (
       return res.status(404).send({ error: 'Attendance not found' });
     }
 
-    attendance.originalImages.push({
+    // mongodb do not support keys that contain .
+    // therefore replacing . with _
+    attendance.originalImages.set(fileName.replace('.', '_'), {
       page,
       borders,
-      path: fileName,
+      path: `uploads/attendance/${req.params.sessionId}/${fileName}`,
     });
 
     await attendance.save();
 
     res.sendStatus(200);
   } catch (error) {
+    console.log(error);
     if (error instanceof Error) {
       res.status(500).send(error.message);
     } else {

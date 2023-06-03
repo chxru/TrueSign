@@ -34,13 +34,15 @@ export class S3Service implements IStorageService {
     data: Buffer;
     directory: string;
     extension: string;
+    filename?: string;
   }): Promise<string> {
     const content = Buffer.from(props.data);
 
     // remove trailing slash
     const directory = props.directory.replace(/\/$/, '');
 
-    const filePath = directory + '/' + uuidv4() + '.' + props.extension;
+    const fileName = (props.filename || uuidv4()) + '.' + props.extension;
+    const filePath = directory + '/' + fileName;
 
     const command = new PutObjectCommand({
       Bucket: this.bucket,
@@ -50,7 +52,7 @@ export class S3Service implements IStorageService {
 
     try {
       await this.client.send(command);
-      return filePath;
+      return fileName;
     } catch (err) {
       console.log('Error in uploading s3', err);
       throw new Error('Error in uploading s3');

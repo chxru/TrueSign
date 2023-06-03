@@ -4,7 +4,14 @@ import { model, Schema, Types } from 'mongoose';
 interface IAttendance {
   moduleId: Types.ObjectId;
   date: Date;
-  originalImages: { page: number; path: string; borders: IBorders }[];
+  originalImages: Map<
+    string,
+    {
+      page: number;
+      path: string;
+      borders: IBorders;
+    }
+  >;
 }
 
 const attendanceSchema = new Schema<IAttendance>(
@@ -18,50 +25,49 @@ const attendanceSchema = new Schema<IAttendance>(
       type: Date,
     },
     originalImages: {
-      type: [
-        {
-          page: {
-            type: Number,
+      type: Map,
+      of: {
+        page: {
+          type: Number,
+        },
+        path: {
+          type: String,
+        },
+        borders: {
+          topLeft: {
+            x: {
+              type: Number,
+            },
+            y: {
+              type: Number,
+            },
           },
-          path: {
-            type: String,
+          topRight: {
+            x: {
+              type: Number,
+            },
+            y: {
+              type: Number,
+            },
           },
-          borders: {
-            topLeft: {
-              x: {
-                type: Number,
-              },
-              y: {
-                type: Number,
-              },
+          bottomLeft: {
+            x: {
+              type: Number,
             },
-            topRight: {
-              x: {
-                type: Number,
-              },
-              y: {
-                type: Number,
-              },
+            y: {
+              type: Number,
             },
-            bottomLeft: {
-              x: {
-                type: Number,
-              },
-              y: {
-                type: Number,
-              },
+          },
+          bottomRight: {
+            x: {
+              type: Number,
             },
-            bottomRight: {
-              x: {
-                type: Number,
-              },
-              y: {
-                type: Number,
-              },
+            y: {
+              type: Number,
             },
           },
         },
-      ],
+      },
     },
   },
   {
