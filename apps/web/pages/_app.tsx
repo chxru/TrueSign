@@ -32,7 +32,16 @@ function CustomApp({ Component, pageProps }: AppProps) {
 
       <main className="app">
         <ChakraProvider>
-          <ClerkProvider {...pageProps}>
+          <ClerkProvider
+            {...pageProps}
+            appearance={{
+              elements: {
+                footer: {
+                  display: 'none',
+                },
+              },
+            }}
+          >
             {isPublicPage(pathname) ? (
               <Component {...pageProps} />
             ) : (
