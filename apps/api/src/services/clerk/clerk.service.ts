@@ -1,4 +1,5 @@
-import { invitations } from '@clerk/clerk-sdk-node';
+import { invitations, users } from '@clerk/clerk-sdk-node';
+import { UserModel } from '@truesign/mongo';
 
 interface CreateInviteLinkOptions {
   email: string;
@@ -39,4 +40,17 @@ export const CreateInviteLink = async ({
 
     throw error;
   }
+};
+
+export const SyncClerkFromDB = async (clerk_id: string) => {
+  const clerkUser = await users.getUser(clerk_id);
+  const mongoUser = await UserModel.findOne({
+    email: clerkUser.emailAddresses[0].emailAddress,
+  });
+
+  await users.updateUser(clerk_id, {
+    externalId: mongoUser._id.toString(),
+    firstName: mongoUser.firstName,
+    lastName: mongoUser.lastName,
+  });
 };
