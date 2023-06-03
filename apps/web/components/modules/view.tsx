@@ -3,6 +3,7 @@ import {
   Container,
   Heading,
   HStack,
+  Progress,
   Text,
   useToast,
 } from '@chakra-ui/react';
@@ -120,9 +121,12 @@ const Card = (props: CardProps) => {
 };
 
 export const ViewModules = () => {
-  const { data, isLoading, error } = useSWR<IGetModulesRes>(
+  const { data, isLoading, isValidating, error } = useSWR<IGetModulesRes>(
     '/modules/',
-    (url) => Fetcher.get(url)
+    (url) => Fetcher.get(url),
+    {
+      revalidateOnFocus: false,
+    }
   );
   const toast = useToast();
 
@@ -146,19 +150,26 @@ export const ViewModules = () => {
 
   return (
     <Container>
-      <Heading size={'lg'}>My Modules</Heading>
+      <Heading size={'lg'} mb={4}>
+        My Modules
+      </Heading>
 
-      {isLoading && <Text>Loading...</Text>}
-
-      {data &&
-        data.modules.map((module) => (
-          <Card
-            key={module.id}
-            name={module.name}
-            id={module.moduleId}
-            students={module.studentIds}
-          />
+      {isLoading ||
+        (isValidating && (
+          <Progress size={'xs'} colorScheme={'teal'} isIndeterminate />
         ))}
+
+      <Container mt={4}>
+        {data &&
+          data.modules.map((module) => (
+            <Card
+              key={module.id}
+              name={module.name}
+              id={module.moduleId}
+              students={module.studentIds}
+            />
+          ))}
+      </Container>
     </Container>
   );
 };
