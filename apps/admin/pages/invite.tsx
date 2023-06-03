@@ -6,10 +6,8 @@ import {
   FormErrorMessage,
   FormLabel,
   Heading,
-  HStack,
   Input,
-  Radio,
-  RadioGroup,
+  useToast,
 } from '@chakra-ui/react';
 import { Fetcher } from '@truesign/frontend';
 import { ICreateInviteRes } from '@truesign/types';
@@ -30,27 +28,34 @@ type formType = z.infer<typeof schema>;
 
 const InvitePage = () => {
   const [requestInProgress, setRequestInProgress] = useState(false);
+  const toast = useToast();
 
   const formik = useFormik<formType>({
     initialValues: {
       email: '',
       firstName: '',
       lastName: '',
-      role: 'student',
+      role: 'staff',
     },
     validationSchema,
     onSubmit: async (values, actions) => {
       setRequestInProgress(true);
 
       try {
-        const { inviteId } = await Fetcher.post<ICreateInviteRes>(
-          '/invites/create',
-          values
-        );
-        console.log(inviteId);
+        await Fetcher.post<ICreateInviteRes>('/invites/create', values);
         actions.resetForm();
+
+        toast({
+          title: 'Invite sent',
+          description: `An invite has been sent to ${values.email}`,
+          status: 'success',
+        });
       } catch (error) {
-        console.error(error);
+        toast({
+          title: 'Error',
+          description: error.message,
+          status: 'error',
+        });
       } finally {
         setRequestInProgress(false);
       }
@@ -60,11 +65,11 @@ const InvitePage = () => {
   return (
     <>
       <Head>
-        <title>Invite User</title>
+        <title>Invite Staff</title>
       </Head>
 
       <Container>
-        <Heading size="lg">Invite User</Heading>
+        <Heading size="lg">Invite Staff</Heading>
 
         <Box mt={8}>
           <form onSubmit={formik.handleSubmit}>
@@ -123,29 +128,13 @@ const InvitePage = () => {
               <FormErrorMessage>{formik.errors.lastName}</FormErrorMessage>
             </FormControl>
 
-            <FormControl as={'fieldset'} mb={8} isRequired>
-              <FormLabel as={'legend'} htmlFor={null}>
-                User Role
-              </FormLabel>
-
-              <RadioGroup
-                defaultValue={formik.initialValues.role}
-                onChange={formik.handleChange}
-              >
-                <HStack spacing="24px">
-                  <Radio value="staff">Staff</Radio>
-                  <Radio value="student">Student</Radio>
-                </HStack>
-              </RadioGroup>
-            </FormControl>
-
             <Button
               type="submit"
               colorScheme={'teal'}
               width="full"
               isLoading={requestInProgress}
             >
-              Invite User
+              Invite
             </Button>
           </form>
         </Box>
