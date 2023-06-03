@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { Fetcher } from '@truesign/frontend';
 import { useFormik } from 'formik';
+import { useSWRConfig } from 'swr';
 import { z } from 'zod';
 import { toFormikValidationSchema } from 'zod-formik-adapter';
 
@@ -23,6 +24,7 @@ type formType = z.infer<typeof schema>;
 
 export const AddNewModule = () => {
   const toast = useToast();
+  const { mutate } = useSWRConfig();
   const formik = useFormik<formType>({
     initialValues: {
       name: '',
@@ -35,6 +37,8 @@ export const AddNewModule = () => {
           name: values.name,
           moduleId: values.moduleId.toLowerCase(),
         });
+
+        mutate('/modules/');
 
         toast({
           title: 'Module created',
