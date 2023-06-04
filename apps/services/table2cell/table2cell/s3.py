@@ -16,12 +16,14 @@ BUCKET_NAME = os.getenv("S3_BUCKET")
 
 
 def download_image(path: str):
+    print("downloading", path)
+
     query = s3.get_object(Bucket=BUCKET_NAME, Key=path)
 
     # save image in /tmp
     file_name = path.split("/")[-1]
     session_id = path.split("/")[-2]
-    file_path = f"/tmp/{session_id}/{file_name}"
+    file_path = f"/tmp/attendance/{session_id}/{file_name}"
 
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 

@@ -31,4 +31,4 @@ class Modules(TypedDict):
     _id: ObjectId
     students: list[ObjectId]
     """List of student ids"""
-    student_count: int
+    student_id_list: list[str]

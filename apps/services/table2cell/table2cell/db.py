@@ -31,16 +31,35 @@ def get_attendance_data(attendance_id: str) -> Attendance:
     return data
 
 
-def get_student_count(moduleId: ObjectId) -> int:
+def get_students_id_list(moduleId: ObjectId) -> list[str]:
     query = modules_collection.aggregate(
         [
             {"$match": {"_id": moduleId}},
-            {"$project": {"student_count": {"$size": "$students"}}},
+            {
+                "$lookup": {
+                    "from": "students",
+                    "localField": "students",
+                    "foreignField": "_id",
+                    "as": "students",
+                }
+            },
+            {"$project": {"student_id_list": "$students.studentId"}},
         ]
     )
 
-    module = list(query)[0]
-    if not module:
-        raise Exception("Module not found")
+    students = list(query)[0]
+    if not students:
+        raise Exception("Students not found")
 
-    return module["student_count"]
+    students = students["student_id_list"]
+
+    return __sort_student_ids(students)
+
+
+def __sort_student_ids(student_ids: list[str]) -> list[str]:
+    def key_fn(student_id: str):
+        # split id into components
+        faculty, year, pid = student_id.split("/")
+        return (faculty, int(year), int(pid))
+
+    return sorted(student_ids, key=key_fn)

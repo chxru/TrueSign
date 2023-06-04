@@ -2,8 +2,9 @@ import boto3
 import json
 import os
 from dotenv import load_dotenv
+from table2cell.constants import MAX_COLS, MAX_ROWS
 from table2cell.cv import process_image
-from table2cell.db import get_attendance_data, get_student_count
+from table2cell.db import get_attendance_data, get_students_id_list
 from table2cell.s3 import download_image
 
 load_dotenv()
@@ -31,13 +32,31 @@ def process_key(key: str):
 
     # get attendance data from database
     attendance_data = get_attendance_data(attendance_id)
-    student_count = get_student_count(attendance_data["moduleId"])
+    students = get_students_id_list(attendance_data["moduleId"])
+    student_count = len(students)
+
+    max_signs_per_page = MAX_COLS * MAX_ROWS
+    start_sign_idx = (page_no) * max_signs_per_page
+    end_sign_idx = (page_no + 1) * max_signs_per_page
+
+    # if end_sign_idx exceeds student_count, set it to student_count
+    if end_sign_idx > student_count:
+        end_sign_idx = student_count
+
+    # get students for this page
+    students = students[start_sign_idx:end_sign_idx]
 
     # download and save image
     image_path = download_image(key)
 
     # process image
-    process_image(image_path, student_count, page_no)
+    process_image(
+        image_path,
+        page_no,
+        end_sign_idx - start_sign_idx,
+        attendance_data["originalImages"][file_name.replace(".", "_")]["borders"],
+        students,
+    )
 
 
 def listen_queue():
@@ -47,17 +66,12 @@ def listen_queue():
     )
 
     for message in response["Messages"]:
-        try:
-            message = json.loads(message["Body"])["Message"]
-            key = json.loads(message)["Records"][0]["s3"]["object"]["key"]
+        message = json.loads(message["Body"])["Message"]
+        key = json.loads(message)["Records"][0]["s3"]["object"]["key"]
 
-            print(key)
+        print(key)
 
-            process_key(key)
-        except Exception as e:
-            # exceptions can be occurred due to missing key or value in the message
-            # log and ignore them for now
-            print(e)
+        process_key(key)
 
 
 listen_queue()
