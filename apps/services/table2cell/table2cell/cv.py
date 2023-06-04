@@ -2,16 +2,14 @@ import cv2
 import numpy as np
 
 def process_image(image_path: str, student_count: int, page_no: int):
-    # print("Image path", image_path)
-    # print("Student count", student_count)
-    # print("Page no", page_no)
     enhancedImage = enhance_Img(image_path)
-    # cv2.imwrite('apps/services/table2cell/table2cell/__pycache__image-2.png',enhancedImage)
     conts = find_contours(image_path)
+    contours = sort_contours(conts, method="left-to-right")
+    contours_final = sort_contours(contours, method="top-to-bottom")
+
     cell_count=63
-    final_box_list = get_cells(conts,cell_count)
-    sorted_list=sort_list(final_box_list)
-    save_cell(sorted_list,image_path)
+    sorted_list = get_cells(contours_final,cell_count)
+    save(sorted_list,image_path)
 
 # def warp_Img(img, borders):
 #     imgHeight, imgWidth = img.shape
@@ -63,6 +61,18 @@ def find_contours(fileName):
     contours, hierarchy = cv2.findContours(img_final,cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     return contours
 
+def sort_contours(cnts, method="left-to-right"):
+	reverse = False
+	i = 0
+	if method == "right-to-left" or method == "bottom-to-top":
+		reverse = True
+	if method == "top-to-bottom" or method == "bottom-to-top":
+		i = 1
+	boundingBoxes = [cv2.boundingRect(c) for c in cnts]
+	(cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
+		key=lambda b:b[1][i], reverse=reverse))
+	return cnts
+
 def get_cells(cnts,cell_count):
     areaList =[]
     for c in cnts:
@@ -72,6 +82,9 @@ def get_cells(cnts,cell_count):
     final_contour_list = get_bounding_contours(indicesList, cnts)
     box_list = [cv2.boundingRect(c) for c in final_contour_list]
     return box_list
+
+def get_bounding_contours(indices, contours):
+    return [contours[i] for i in indices]
 
 def get_area(contours):
     x, y, w, h = cv2.boundingRect(contours)
@@ -90,33 +103,10 @@ def get_closest_indices(lst,cell_count):
             best_slice = sorted_lst[i:i+cell_count]
     return sorted([x[0] for x in best_slice])
 
-def get_bounding_contours(indices, contours):
-    return [contours[i] for i in indices]
-
-def sort_boxes(boundingBoxes, method="left-to-right"):
-	reverse = False
-	i = 0
-	if method == "right-to-left" or method == "bottom-to-top":
-		reverse = True
-	if method == "top-to-bottom" or method == "bottom-to-top":
-		i = 1
-	boundingBoxes = sorted(boundingBoxes, key=lambda b: b[i], reverse=reverse)
-	return boundingBoxes
-
-def sort_list(list):
-    tb_sorted = sort_boxes(list, method="top-to-bottom")
-    sub_slice = [tb_sorted[i:i+7] for i in range(0, len(tb_sorted), 7)]
-    final_list = []
-    for sub in sub_slice:
-        bounds = sort_boxes(sub, method="left-to-right")
-        final_list.extend(bounds)
-    return final_list
-
-def save_cell(list,fileName):
-    idx =0
-    enhnced_img = enhance_Img(fileName)
-    # cv2.imwrite('apps/services/table2cell/table2cell/__pycache__/new/one.png', enhnced_img)
+def save(list,filename):
+    idx = 0
+    enhnced_img = enhance_Img(filename)
     for x, y, w, h in list:
         idx += 1
-        new_img = enhnced_img[y:y+h, x:x+w]
-        cv2.imwrite('apps/services/table2cell/table2cell/__pycache__/new/'+str(idx) + '.png', new_img)
+        cropped = enhnced_img[y:y+h, x:x+w]
+        cv2.imwrite('apps/services/table2cell/table2cell/__pycache__/new/'+str(idx) + '.png', cropped)
