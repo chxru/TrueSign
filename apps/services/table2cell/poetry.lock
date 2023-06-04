@@ -281,26 +281,6 @@ files = [
 ]
 
 [[package]]
-name = "table2cell"
-version = "1.0.0"
-description = "Segment cells of the table to image per cell"
-optional = false
-python-versions = ">=3.8,<3.10"
-files = []
-develop = true
-
-[package.dependencies]
-boto3 = "^1.26.145"
-numpy = "^1.24.3"
-opencv-python = "^4.7.0.72"
-pymongo = "^4.3.3"
-python-dotenv = "^1.0.0"
-
-[package.source]
-type = "directory"
-url = "apps/services/table2cell"
-
-[[package]]
 name = "urllib3"
 version = "1.26.16"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -319,4 +299,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.10"
-content-hash = "cbb3f61dd000f63e71c1c483ff08eccb01356f6d3e5f1f34f08d58f3c217d7cb"
+content-hash = "a1a61b0894c543bbe01d0b0c9caeee6117658be6fd351219f0dcd47f1041ee18"

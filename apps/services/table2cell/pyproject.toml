@@ -1,0 +1,33 @@
+[tool.coverage.run]
+branch = true
+source = [ "table2cell" ]
+
+[tool.coverage.report]
+exclude_lines = [ "if TYPE_CHECKING:" ]
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-fail-under=100 --cov-report html:'../../coverage/apps/services/table2cell/html' --cov-report xml:'../../coverage/apps/services/table2cell/coverage.xml' --junitxml='../../reports/apps/services/table2cell/unittests/junit.xml' --html='../../reports/apps/services/table2cell/unittests/html/index.html'"
+
+[tool.poetry]
+name = "table2cell"
+version = "1.0.0"
+description = "Segment cells of the table to image per cell"
+authors = [ ]
+license = "Proprietary"
+readme = "README.md"
+
+  [[tool.poetry.packages]]
+  include = "table2cell"
+
+  [tool.poetry.dependencies]
+  python = ">=3.8,<3.10"
+  python-dotenv = "^1.0.0"
+  boto3 = "^1.26.145"
+  pymongo = "^4.3.3"
+  opencv-python = "^4.7.0.72"
+  numpy = "^1.24.3"
+
+[build-system]
+requires = [ "poetry-core==1.1.0" ]
+build-backend = "poetry.core.masonry.api"
