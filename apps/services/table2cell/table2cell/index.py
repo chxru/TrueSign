@@ -1,3 +1,4 @@
+import time
 import boto3
 import json
 import os
@@ -67,20 +68,34 @@ def process_key(key: str):
 def listen_queue():
     response = sqs.receive_message(
         QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
-        MaxNumberOfMessages=1,
+        MaxNumberOfMessages=5,
     )
 
     if "Messages" not in response:
-        print("No messages in queue")
         return
 
+    print("processing message")
+
     for message in response["Messages"]:
-        message = json.loads(message["Body"])["Message"]
-        key = json.loads(message)["Records"][0]["s3"]["object"]["key"]
+        decoded_message = json.loads(message["Body"])["Message"]
+        key = json.loads(decoded_message)["Records"][0]["s3"]["object"]["key"]
 
         print(key)
 
         process_key(key)
 
+        # delete message from queue
+        sqs.delete_message(
+            QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
+            ReceiptHandle=message["ReceiptHandle"],
+        )
 
-listen_queue()
+
+if __name__ == "__main__":
+    print("listening to queue")
+
+    while True:
+        listen_queue()
+
+        # sleep 30sec
+        time.sleep(30)
