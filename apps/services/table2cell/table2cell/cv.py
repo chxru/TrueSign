@@ -11,7 +11,7 @@ def process_image(
     expected_signs: int,
     borders: Border,
     students: list[str],
-):
+) -> str:
     image_dir = "/".join(image_path.split("/")[:-1])
     dest_dir = image_dir + f"/processed/{str(page)}/"
 
@@ -33,12 +33,13 @@ def process_image(
             x, y, w, h = cell  # type: ignore
             cropped = __crop_image(warped_image, x, y, w, h)
             cropped = __enhance_image(cropped)
-            print(n)
             __save_image(
                 cropped,
                 dest_dir + students[n].replace("/", "_") + ".png",
             )
             n += 1
+
+    return dest_dir
 
 
 def __warp_image(image: cv2.Mat, borders: Border) -> cv2.Mat:

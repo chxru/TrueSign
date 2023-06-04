@@ -31,3 +31,12 @@ def download_image(path: str):
         f.write(query["Body"].read())
 
     return file_path
+
+
+def upload_img(path: str, session_id: str):
+    print("uploading", path)
+
+    file_name = path.split("/")[-1]
+    key = f"extracted_signs/{session_id}/{file_name}"
+
+    s3.upload_file(path, BUCKET_NAME, key)

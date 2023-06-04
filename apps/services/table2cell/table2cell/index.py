@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from table2cell.constants import MAX_COLS, MAX_ROWS
 from table2cell.cv import process_image
 from table2cell.db import get_attendance_data, get_students_id_list
-from table2cell.s3 import download_image
+from table2cell.s3 import download_image, upload_img
 
 load_dotenv()
 
@@ -50,7 +50,7 @@ def process_key(key: str):
     image_path = download_image(key)
 
     # process image
-    process_image(
+    signs_dir = process_image(
         image_path,
         page_no,
         end_sign_idx - start_sign_idx,
@@ -58,12 +58,21 @@ def process_key(key: str):
         students,
     )
 
+    # upload image to s3
+    for file_name in os.listdir(signs_dir):
+        file_path = signs_dir + file_name
+        upload_img(file_path, attendance_id)
+
 
 def listen_queue():
     response = sqs.receive_message(
         QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
         MaxNumberOfMessages=1,
     )
+
+    if "Messages" not in response:
+        print("No messages in queue")
+        return
 
     for message in response["Messages"]:
         message = json.loads(message["Body"])["Message"]
