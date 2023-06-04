@@ -4,8 +4,8 @@ from bson import ObjectId
 
 
 class Coordiantes(TypedDict):
-    x: int
-    y: int
+    x: float
+    y: float
 
 
 class Border(TypedDict):
