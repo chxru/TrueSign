@@ -37,7 +37,7 @@ export const SidebarLayout = ({ content, children }: SidebarLayoutProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Box minH="100vh">
+    <Flex minH="100vh" direction={'column'}>
       <SidebarContent
         content={content}
         onClose={() => onClose}
@@ -59,10 +59,10 @@ export const SidebarLayout = ({ content, children }: SidebarLayoutProps) => {
 
       {/* mobile nav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }} p="4">
+      <Flex direction={'column'} ml={{ base: 0, md: 60 }} p="4" grow={1}>
         {children}
-      </Box>
-    </Box>
+      </Flex>
+    </Flex>
   );
 };
 

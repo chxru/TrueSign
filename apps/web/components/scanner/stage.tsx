@@ -47,6 +47,7 @@ export const Stage = () => {
       justify={'center'}
       align={'center'}
       minHeight={'100%'}
+      grow={1}
     >
       <Box
         ref={parentRef}

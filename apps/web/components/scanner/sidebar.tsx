@@ -14,7 +14,7 @@ import {
   IInitiateAttendanceReq,
   IInitiateAttendanceRes,
 } from '@truesign/types';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import useSWR from 'swr';
 import {
@@ -44,10 +44,13 @@ const uploadSingleImage = async (
   await Fetcher.post(`/attendance/${sessionId}/upload`, formData);
 };
 
-export const ScannerSidebar = () => {
+interface IScannerSidebarProps {
+  openFileInput: () => void;
+}
+
+export const ScannerSidebar = (props: IScannerSidebarProps) => {
   const [moduleId, setModuleId] = useState('');
   const [date, setDate] = useState(new Date());
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const toast = useToast();
   const { data, isLoading, error } = useSWR<IGetModulesRes>(
@@ -62,22 +65,8 @@ export const ScannerSidebar = () => {
     }
   }, [data]);
 
-  const addImage = useScannerStore((state) => state.addImage);
   const borders = useScannerStore((state) => state.borders);
   const images = useScannerStore((state) => state.images);
-
-  const handleAddImage = (files: FileList) => {
-    Array.from(files).forEach((file) => {
-      const data: Omit<IScannerUploadImage, 'id'> = {
-        url: URL.createObjectURL(file),
-        name: file.name,
-        processed: false,
-        file: file,
-      };
-
-      addImage(data);
-    });
-  };
 
   /**
    * Upload images to server
@@ -140,7 +129,7 @@ export const ScannerSidebar = () => {
   }, [toast, error]);
 
   return (
-    <Container py={2}>
+    <Container py={2} maxWidth={'sm'}>
       <Heading size={'md'}>Select module</Heading>
 
       <Select
@@ -170,15 +159,7 @@ export const ScannerSidebar = () => {
       />
 
       <VStack align={'stretch'} mt={4}>
-        <Button
-          onClick={() => {
-            if (inputRef.current) {
-              inputRef.current.click();
-            }
-          }}
-        >
-          Add more images
-        </Button>
+        <Button onClick={props.openFileInput}>Add more images</Button>
         <Button
           colorScheme={'teal'}
           disabled={images.length === 0}
@@ -186,17 +167,6 @@ export const ScannerSidebar = () => {
         >
           Submit
         </Button>
-
-        <input
-          ref={inputRef}
-          type="file"
-          name="image-upload"
-          multiple={true}
-          style={{ display: 'none' }}
-          onChange={(e) => {
-            handleAddImage(e.target.files);
-          }}
-        />
       </VStack>
     </Container>
   );
