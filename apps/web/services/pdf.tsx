@@ -21,10 +21,16 @@ const PAGE_MARGIN_TOP_FIRST_PAGE = 25;
 const PAGE_MARGIN_TOP_OTHER_PAGES = 25;
 
 const generateQRCode = async (moduleId: string, pageNo: number) => {
+  const data = JSON.stringify({
+    module: moduleId,
+    page: pageNo,
+  });
+
   try {
-    const code = await QRCode.toDataURL(`${moduleId}-${pageNo}`, {
+    const code = await QRCode.toDataURL(data, {
       errorCorrectionLevel: 'H',
     });
+
     return code;
   } catch (error) {
     console.error(error);
@@ -38,7 +44,7 @@ const mainPage = async (
   students: string[]
 ) => {
   const code = await generateQRCode(moduleId, 1);
-  doc.addImage(code, 'png', 190, 5, 15, 15, 'QR Code');
+  doc.addImage(code, 'png', 190, 5, 15, 15);
 
   doc.setFontSize(15);
   doc.text(`${moduleId} - ${moduleName}`, 10, 10);
@@ -97,9 +103,14 @@ const mainPage = async (
   );
 };
 
-const otherPage = async (doc: jsPDF, moduleId: string, students: string[]) => {
-  const code = await generateQRCode(moduleId, 1);
-  doc.addImage(code, 'png', 190, 5, 15, 15, 'QR Code');
+const otherPage = async (
+  doc: jsPDF,
+  pageNo: number,
+  moduleId: string,
+  students: string[]
+) => {
+  const code = await generateQRCode(moduleId, pageNo);
+  doc.addImage(code, 'png', 190, 5, 15, 15);
 
   const rows = Math.ceil(students.length / MAX_COLS);
   const lastRowColumns = students.length % MAX_COLS || MAX_COLS;
@@ -155,13 +166,16 @@ export const GenerateAttendanceSheet = async (
   );
 
   // handle other pages
+  let pageNo = 2;
   while (students.length > 0) {
     doc.addPage();
     await otherPage(
       doc,
+      pageNo,
       moduleId,
       students.splice(0, MAX_ROWS_OTHER_PAGES * MAX_COLS)
     );
+    pageNo++;
   }
 
   doc.save(`${moduleName}.pdf`);
