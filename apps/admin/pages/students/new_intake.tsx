@@ -45,7 +45,9 @@ const NewIntakePage: FunctionComponent = () => {
 
       <IntakeStepper activeStep={activeStep} setActiveStep={setActiveStep} />
 
-      {activeStep == 1 && <ImportStudent heading="Upload student data CSV" />}
+      {activeStep == 1 && (
+        <ImportStudent heading="Upload student data CSV" skipUpload />
+      )}
 
       {activeStep == 2 && (
         <Container>

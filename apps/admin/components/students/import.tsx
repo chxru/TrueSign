@@ -7,10 +7,12 @@ import { useStudentImportStore } from 'apps/admin/store/studentImport.store';
 
 interface ImportStudentsProp {
   heading?: string;
+  skipUpload?: boolean;
 }
 
 export const ImportStudent: FunctionComponent<ImportStudentsProp> = ({
   heading,
+  skipUpload,
 }) => {
   const inputRef = useRef<HTMLInputElement>();
   const toast = useToast();
@@ -40,7 +42,9 @@ export const ImportStudent: FunctionComponent<ImportStudentsProp> = ({
           }))
         );
 
-        return;
+        if (skipUpload) {
+          return;
+        }
 
         try {
           const res = await Fetcher.post<ICreateStudentRes>(

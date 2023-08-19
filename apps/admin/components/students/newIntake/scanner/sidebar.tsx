@@ -1,25 +1,13 @@
 import 'react-calendar/dist/Calendar.css';
 import { Button, Container, useToast, VStack } from '@chakra-ui/react';
 import { Fetcher } from '@truesign/frontend';
-import { IBorders } from '@truesign/types';
 import { useRef } from 'react';
 import { IScannerUploadImage, useScannerStore } from './store';
-
-const uploadSingleImage = async (
-  image: IScannerUploadImage,
-  borders: IBorders,
-  pageNo: number
-) => {
-  const formData = new FormData();
-  formData.append('image', image.file);
-  formData.append('borders', JSON.stringify(borders));
-  formData.append('pageNo', pageNo.toString());
-
-  await Fetcher.post(`/signatures/upload`, formData);
-};
+import { useStudentImportStore } from 'apps/admin/store/studentImport.store';
 
 export const ScannerSidebar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const students = useStudentImportStore((state) => state.students);
 
   const toast = useToast();
 
@@ -45,16 +33,23 @@ export const ScannerSidebar = () => {
    */
   const uploadImages = async () => {
     try {
-      const promises = [];
+      const formData = new FormData();
 
       for (const image of images) {
         const docBorders = borders[image.id].borders;
 
-        // assumes page no === counter
-        promises.push(uploadSingleImage(image, docBorders, image.id));
+        formData.append('images[]', image.file);
+        formData.append('borders[]', JSON.stringify(docBorders));
+        formData.append('pageNo[]', image.id.toString());
+
+        for (const student of students) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          const { status, ...rest } = student;
+          formData.append('students[]', JSON.stringify(rest));
+        }
       }
 
-      await Promise.all(promises);
+      await Fetcher.post(`/students/upload`, formData);
 
       toast({
         title: 'Upload successful',
