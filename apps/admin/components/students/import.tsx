@@ -1,12 +1,20 @@
 import { Box, Button, Container, Heading, useToast } from '@chakra-ui/react';
-import { useRef } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { parse } from 'papaparse';
 import { Fetcher } from '@truesign/frontend';
 import { ICreateStudentRes, IStudent } from '@truesign/types';
+import { useStudentImportStore } from 'apps/admin/store/studentImport.store';
 
-export const ImportStudent = () => {
+interface ImportStudentsProp {
+  heading?: string;
+}
+
+export const ImportStudent: FunctionComponent<ImportStudentsProp> = ({
+  heading,
+}) => {
   const inputRef = useRef<HTMLInputElement>();
   const toast = useToast();
+  const store = useStudentImportStore();
 
   const handleInput = (files: FileList) => {
     const file = files[0];
@@ -23,6 +31,16 @@ export const ImportStudent = () => {
           console.warn(results.errors);
           return;
         }
+
+        store.importStudents(
+          results.data.map((r) => ({
+            ...r,
+            studentId: r.studentId.toLowerCase(),
+            status: 'imported',
+          }))
+        );
+
+        return;
 
         try {
           const res = await Fetcher.post<ICreateStudentRes>(
@@ -71,7 +89,7 @@ export const ImportStudent = () => {
 
   return (
     <Container>
-      <Heading size={'lg'}>Import CSV</Heading>
+      <Heading size={'lg'}>{heading || 'Import CSV'}</Heading>
 
       <Box mt={8}>
         <input
