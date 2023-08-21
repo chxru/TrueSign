@@ -4,16 +4,6 @@
   "sourceRoot": "packages/frontend-common/src",
   "projectType": "library",
   "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/frontend-common",
-        "main": "packages/frontend-common/src/index.ts",
-        "tsConfig": "packages/frontend-common/tsconfig.lib.json",
-        "assets": ["packages/frontend-common/*.md"]
-      }
-    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
