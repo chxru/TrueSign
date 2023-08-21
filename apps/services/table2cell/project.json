@@ -56,13 +56,6 @@
         "debug": false
       }
     },
-    "lint": {
-      "executor": "@nxlv/python:flake8",
-      "outputs": ["reports/apps/services/table2cell/pylint.txt"],
-      "options": {
-        "outputFile": "reports/apps/services/table2cell/pylint.txt"
-      }
-    },
     "tox": {
       "executor": "@nxlv/python:tox",
       "outputs": [
