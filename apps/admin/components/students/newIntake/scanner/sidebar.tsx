@@ -41,12 +41,12 @@ export const ScannerSidebar = () => {
         formData.append('images[]', image.file);
         formData.append('borders[]', JSON.stringify(docBorders));
         formData.append('pageNo[]', image.id.toString());
+      }
 
-        for (const student of students) {
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { status, ...rest } = student;
-          formData.append('students[]', JSON.stringify(rest));
-        }
+      for (const student of students) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { status, ...rest } = student;
+        formData.append('students[]', JSON.stringify(rest));
       }
 
       await Fetcher.post(`/students/upload`, formData);
