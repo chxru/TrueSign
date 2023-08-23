@@ -104,10 +104,16 @@ export const HandleUpload = async (
     });
   }
 
-  const students: IStudent[] = [];
+  // timestamp act as a unique id in later steps
+  const uniqueId = Date.now();
+
+  const students: (IStudent & { importedIn: string })[] = [];
   for (const student of req.body['students[]']) {
     try {
-      students.push(JSON.parse(student));
+      students.push({
+        ...JSON.parse(student),
+        importedIn: uniqueId.toString(),
+      });
     } catch (error) {
       return res.status(400).send({
         message: 'Invalid request body, invalid students',
@@ -125,7 +131,6 @@ export const HandleUpload = async (
   // upload signature images to S3
   try {
     const storageService: IStorageService = new S3Service();
-    const timestamp = Date.now();
 
     for (let i = 0; i < images.length; i++) {
       const image = images[i];
@@ -135,13 +140,13 @@ export const HandleUpload = async (
       const extension = image.name.split('.').pop();
       const fileName = await storageService.upload({
         data: image.data,
-        directory: `uploads/reference_sign_sheets/${timestamp}/`,
+        directory: `uploads/reference_sign_sheets/${uniqueId}/`,
         extension,
         filename: `${pageNo}`,
       });
 
       await RefSigModel.create({
-        uniqueId: timestamp,
+        uniqueId,
         border,
         totalStudents: students.length,
         fileName,
