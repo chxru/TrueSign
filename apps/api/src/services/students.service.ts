@@ -147,7 +147,7 @@ export const HandleUpload = async (
 
       await RefSigModel.create({
         uniqueId,
-        border,
+        borders: border,
         totalStudents: students.length,
         fileName,
       });
