@@ -32,3 +32,11 @@ class Modules(TypedDict):
     students: list[ObjectId]
     """List of student ids"""
     student_id_list: list[str]
+
+
+class RefSigs(TypedDict):
+    _id: ObjectId
+    uniqueId: str
+    totalStudents: int
+    fileName: str
+    borders: Border

@@ -10,11 +10,12 @@ def process_image(
     page: int,
     expected_signs: int,
     borders: Border,
-    students: list[str],
-) -> str:
+) -> list[cv2.Mat]:
+    # remove file name from path
     image_dir = "/".join(image_path.split("/")[:-1])
-    dest_dir = image_dir + f"/processed/{str(page)}/"
 
+    # create a new directory for processed images
+    dest_dir = image_dir + f"/processed/{str(page)}/"
     os.makedirs(dest_dir, exist_ok=True)
 
     original_image = cv2.imread(image_path)
@@ -22,24 +23,29 @@ def process_image(
     gray_image = cv2.cvtColor(warped_image, cv2.COLOR_BGR2GRAY)
 
     contours = __find_contours(gray_image)
-    bounding_boxes = __calculate_bounding_boxes(contours)
+    # bounding_boxes = __calculate_bounding_boxes(contours)
 
     cells = __get_cells(contours, expected_signs)
     grid = __sort_boxes_in_2D(cells)
 
-    n = 0
+    # n = 0
+    cells: list[cv2.Mat] = []
+
     for row in grid:
         for cell in row:
+            # continue if cell is empty
+            if cell == 0:
+                continue
             x, y, w, h = cell  # type: ignore
             cropped = __crop_image(warped_image, x, y, w, h)
             cropped = __enhance_image(cropped)
-            __save_image(
-                cropped,
-                dest_dir + students[n].replace("/", "_") + ".png",
-            )
-            n += 1
+            cells.append(cropped)
 
-    return dest_dir
+    return cells
+
+
+def save_image(image, path):
+    cv2.imwrite(path, image)
 
 
 def __warp_image(image: cv2.Mat, borders: Border) -> cv2.Mat:
@@ -172,10 +178,6 @@ def __crop_image(image, x, y, w, h):
     return image[y : y + h, x : x + w]
 
 
-def __save_image(image, path):
-    cv2.imwrite(path, image)
-
-
 def __get_bounding_contours(indices, contours):
     return [contours[i] for i in indices]
 
@@ -210,5 +212,4 @@ if __name__ == "__main__":
             "bottomLeft": {"x": 0.0, "y": 1.0},
             "bottomRight": {"x": 1.0, "y": 1.0},
         },
-        [f"eg/1111/{i}" for i in range(63)],
     )

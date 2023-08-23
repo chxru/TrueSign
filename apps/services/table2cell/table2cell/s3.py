@@ -15,7 +15,7 @@ s3 = boto3.client(
 BUCKET_NAME = os.getenv("S3_BUCKET")
 
 
-def download_image(path: str):
+def download_image(path: str, dest: str):
     print("downloading", path)
 
     query = s3.get_object(Bucket=BUCKET_NAME, Key=path)
@@ -23,7 +23,7 @@ def download_image(path: str):
     # save image in /tmp
     file_name = path.split("/")[-1]
     session_id = path.split("/")[-2]
-    file_path = f"/tmp/attendance/{session_id}/{file_name}"
+    file_path = f"/tmp/{dest}/{session_id}/{file_name}"
 
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
@@ -33,10 +33,10 @@ def download_image(path: str):
     return file_path
 
 
-def upload_img(path: str, session_id: str):
-    print("uploading", path)
+def upload_img(src: str, dest: str):
+    """
+    Upload image to s3
+    """
+    print("uploading", src, dest)
 
-    file_name = path.split("/")[-1]
-    key = f"extracted_signs/{session_id}/{file_name}"
-
-    s3.upload_file(path, BUCKET_NAME, key)
+    s3.upload_file(src, BUCKET_NAME, dest)
