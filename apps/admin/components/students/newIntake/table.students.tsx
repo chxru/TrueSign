@@ -28,16 +28,14 @@ const ImportTable: FunctionComponent = () => {
         </Thead>
 
         {store.students.map((student) => (
-          <>
-            <Tbody>
-              <Tr>
-                <Td>{student.studentId}</Td>
-                <Td>{student.name}</Td>
-                <Td isNumeric>{student.email}</Td>
-                <Td>{student.status}</Td>
-              </Tr>
-            </Tbody>
-          </>
+          <Tbody key={student.studentId}>
+            <Tr>
+              <Td>{student.studentId}</Td>
+              <Td>{student.name}</Td>
+              <Td isNumeric>{student.email}</Td>
+              <Td>{student.status}</Td>
+            </Tr>
+          </Tbody>
         ))}
       </Table>
     </TableContainer>
