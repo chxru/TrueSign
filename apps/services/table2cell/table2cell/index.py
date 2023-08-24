@@ -3,10 +3,9 @@ import boto3
 import json
 import os
 from dotenv import load_dotenv
-from table2cell.constants import MAX_COLS, MAX_ROWS
-from table2cell.cv import process_image
-from table2cell.db import get_attendance_data, get_students_id_list
-from table2cell.s3 import download_image, upload_img
+from table2cell.process.attendance import process_attendance
+from table2cell.process.refsheets import process_reference_sheets
+from table2cell.s3 import download_image
 
 load_dotenv()
 
@@ -16,53 +15,6 @@ sqs = boto3.client(
     aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
     region_name="ap-southeast-1",
 )
-
-
-def process_key(key: str):
-    arr = key.split("/")
-
-    # key should contain 4 parts
-    if len(arr) != 4:
-        print(arr)
-        raise Exception("Invalid key format")
-
-    # first and second parts can be ignored
-    attendance_id = arr[2]
-    file_name = arr[3]
-    page_no = int(file_name.split(".")[0])
-
-    # get attendance data from database
-    attendance_data = get_attendance_data(attendance_id)
-    students = get_students_id_list(attendance_data["moduleId"])
-    student_count = len(students)
-
-    max_signs_per_page = MAX_COLS * MAX_ROWS
-    start_sign_idx = (page_no) * max_signs_per_page
-    end_sign_idx = (page_no + 1) * max_signs_per_page
-
-    # if end_sign_idx exceeds student_count, set it to student_count
-    if end_sign_idx > student_count:
-        end_sign_idx = student_count
-
-    # get students for this page
-    students = students[start_sign_idx:end_sign_idx]
-
-    # download and save image
-    image_path = download_image(key)
-
-    # process image
-    signs_dir = process_image(
-        image_path,
-        page_no,
-        end_sign_idx - start_sign_idx,
-        attendance_data["originalImages"][file_name.replace(".", "_")]["borders"],
-        students,
-    )
-
-    # upload image to s3
-    for file_name in os.listdir(signs_dir):
-        file_path = signs_dir + file_name
-        upload_img(file_path, attendance_id)
 
 
 def listen_queue():
@@ -78,17 +30,41 @@ def listen_queue():
 
     for message in response["Messages"]:
         decoded_message = json.loads(message["Body"])["Message"]
-        key = json.loads(decoded_message)["Records"][0]["s3"]["object"]["key"]
 
-        print(key)
+        try:
+            message = json.loads(decoded_message)
+            key: str = message["Records"][0]["s3"]["object"]["key"]
+        except:
+            print("invalid message format")
+            continue
 
-        process_key(key)
+        print("processing file " + key)
 
-        # delete message from queue
-        sqs.delete_message(
-            QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
-            ReceiptHandle=message["ReceiptHandle"],
-        )
+        arr = key.split("/")
+        image_type = arr[1]
+        unique_id = arr[2]
+        file_name = arr[3]
+
+        if image_type == "reference_sign_sheets":
+            image_path = download_image(key, "reference")
+            process_reference_sheets(unique_id, file_name, image_path)
+            return
+
+        if image_type == "attendance":
+            image_path = download_image(key, "attendance")
+            process_attendance(unique_id, file_name, image_path)
+            delete_from_queue(message["ReceiptHandle"])
+            return
+
+        print("Unrecognized image type", key)
+
+
+def delete_from_queue(receipt_handle: str):
+    return
+    sqs.delete_message(
+        QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
+        ReceiptHandle=receipt_handle,
+    )
 
 
 if __name__ == "__main__":

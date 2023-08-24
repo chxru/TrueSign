@@ -8,6 +8,7 @@ readme = "README.md"
 
   [tool.poetry.dependencies]
   python = ">=3.8,<3.10"
+  faker = "^19.3.0"
 
     [tool.poetry.dependencies.table2cell]
     path = "apps/services/table2cell"

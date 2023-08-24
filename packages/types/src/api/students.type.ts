@@ -1,3 +1,5 @@
+import { coordinates } from '..';
+
 export interface IStudent {
   studentId: string;
   name: string;
@@ -14,3 +16,14 @@ export type ICreateStudentRes =
       data: string[];
     }
   | string;
+
+export interface IUploadStudentsReqBody {
+  students: IStudent[];
+  border: {
+    topLeft: coordinates;
+    topRight: coordinates;
+    bottomLeft: coordinates;
+    bottomRight: coordinates;
+  };
+  pageNo: string;
+}

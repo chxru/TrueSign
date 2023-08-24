@@ -5,6 +5,7 @@ interface IStudent {
   name: string;
   email: string;
   modules: Types.ObjectId[];
+  importedIn: string;
 }
 
 const studentsSchema = new Schema<IStudent>(
@@ -29,6 +30,11 @@ const studentsSchema = new Schema<IStudent>(
         ref: 'Module',
       },
     ],
+    importedIn: {
+      type: String,
+      required: true,
+      index: true,
+    },
   },
   {
     timestamps: true,
