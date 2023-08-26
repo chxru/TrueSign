@@ -48,6 +48,7 @@ def listen_queue():
         if image_type == "reference_sign_sheets":
             image_path = download_image(key, "reference")
             process_reference_sheets(unique_id, file_name, image_path)
+            delete_from_queue(message["ReceiptHandle"])
             return
 
         if image_type == "attendance":
@@ -60,7 +61,6 @@ def listen_queue():
 
 
 def delete_from_queue(receipt_handle: str):
-    return
     sqs.delete_message(
         QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
         ReceiptHandle=receipt_handle,
