@@ -285,6 +285,19 @@ botocore = ">=1.12.36,<2.0a.0"
 crt = ["botocore[crt] (>=1.20.29,<2.0a.0)"]
 
 [[package]]
+name = "sign"
+version = "1.0.0"
+description = "process"
+optional = false
+python-versions = ">=3.8,<3.10"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "apps/services/sign-process"
+
+[[package]]
 name = "six"
 version = "1.16.0"
 description = "Python 2 and 3 compatibility utilities"
@@ -345,4 +358,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.10"
-content-hash = "7c22878fbcffc6c0f88a9ada614b2ce039a1375644b705948794ef55139f4dcd"
+content-hash = "14742cbb0a98fc8335e5a0be77c9f202b6e032848031ba4587dcb35638dc7316"

@@ -14,6 +14,10 @@ readme = "README.md"
     path = "apps/services/table2cell"
     develop = true
 
+    [tool.poetry.dependencies.sign]
+    path = "apps/services/sign-process"
+    develop = true
+
 [build-system]
 requires = [ "poetry-core==1.1.0" ]
 build-backend = "poetry.core.masonry.api"
