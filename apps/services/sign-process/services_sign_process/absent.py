@@ -5,12 +5,13 @@ from services_sign_process.db import mark_attendance
 BLACK_THRESHOLD = 0.01
 
 
-def markAbsent(file_path: str, attendance_id: str, registration_no: str):
+def markAbsent(file_path: str, attendance_id: str, registration_no: str) -> bool:
+    """Mark the student as absent if the signature is not present in the image"""
     if not __isAbsent(file_path):
-        print("not absent")
-        return
+        return False
 
     doc = mark_attendance(attendance_id, registration_no, True)
+    return True
 
 
 def __isAbsent(file_path: str) -> bool:

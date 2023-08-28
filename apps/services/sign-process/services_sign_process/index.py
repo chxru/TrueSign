@@ -3,7 +3,7 @@ import os
 import time
 import boto3
 from dotenv import load_dotenv
-from services_sign_process.absent import markAbsent
+from services_sign_process.app import handle_signature
 from table2cell.s3 import download_image
 
 
@@ -45,9 +45,8 @@ def listen_queue():
         registration_no = arr[2].split(".")[0]
 
         downloaded_img = download_image(key, "sign")
-        markAbsent(downloaded_img, attendance_id, registration_no)
 
-        print(attendance_id, registration_no)
+        handle_signature(attendance_id, registration_no, downloaded_img)
 
 
 if __name__ == "__main__":
