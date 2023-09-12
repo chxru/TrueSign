@@ -32,7 +32,7 @@
     },
     "build": {
       "executor": "@nxlv/python:build",
-      "outputs": ["apps/services/table2cell/dist"],
+      "outputs": ["{projectRoot}/dist"],
       "options": {
         "outputPath": "dist/services/table2cell",
         "publish": false,
@@ -58,7 +58,9 @@
     },
     "lint": {
       "executor": "@nxlv/python:flake8",
-      "outputs": ["reports/apps/services/table2cell/pylint.txt"],
+      "outputs": [
+        "{workspaceRoot}/reports/apps/services/table2cell/pylint.txt"
+      ],
       "options": {
         "outputFile": "reports/apps/services/table2cell/pylint.txt"
       }
@@ -66,8 +68,8 @@
     "tox": {
       "executor": "@nxlv/python:tox",
       "outputs": [
-        "reports/apps/services/table2cell/unittests",
-        "coverage/apps/services/table2cell"
+        "{workspaceRoot}/reports/apps/services/table2cell/unittests",
+        "{workspaceRoot}/coverage/apps/services/table2cell"
       ],
       "options": {
         "silent": false,
