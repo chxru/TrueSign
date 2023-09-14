@@ -356,3 +356,8 @@ minio/**/*
 
 # ignore temp dir
 /tmp
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

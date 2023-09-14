@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  server:
+    image: chxru/truesign-server:0.1
+    ports:
+      - 80:3000
+    env_file:
+      - .env
