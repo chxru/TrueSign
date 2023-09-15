@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import { AiOutlineScan } from 'react-icons/ai';
 import { BiBookOpen } from 'react-icons/bi';
 import { FiHome } from 'react-icons/fi';
+import { TbReportAnalytics } from 'react-icons/tb';
 
 const publicPages = ['/sign-in/[[...index]]', '/sign-up/[[...index]]'];
 const isPublicPage = (path: string) => publicPages.includes(path);
@@ -21,6 +22,7 @@ const sidebarItems: SidebarItem[] = [
   { name: 'Home', icon: FiHome, url: '/' },
   { name: 'Scan', icon: AiOutlineScan, url: '/dashboard/scan' },
   { name: 'Module', icon: BiBookOpen, url: '/modules' },
+  { name: 'Reports', icon: TbReportAnalytics, url: '/reports' },
 ];
 
 function CustomApp({ Component, pageProps }: AppProps) {

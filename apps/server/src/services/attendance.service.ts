@@ -1,4 +1,4 @@
-import { AttendanceModel, ModuleModel } from '@truesign/mongo';
+import { AttendanceModel, ModuleModel, UserModel } from '@truesign/mongo';
 import {
   ExpressRequest,
   ExpressResponse,
@@ -7,6 +7,76 @@ import {
   IInitiateAttendanceRes,
 } from '@truesign/types';
 import { IStorageService, S3Service } from './storage';
+
+export const GetMyAttendances = async (
+  req: ExpressRequest,
+  res: ExpressResponse
+) => {
+  if (!req.user) {
+    return res.sendStatus(401);
+  }
+
+  const query = await UserModel.aggregate([
+    {
+      $project: {
+        _id: 1,
+      },
+    },
+    {
+      $match: {
+        _id: req.user.mongoId,
+      },
+    },
+    {
+      $lookup: {
+        from: 'modules',
+        localField: '_id',
+        foreignField: 'coordinator',
+        as: 'modules',
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              moduleId: 1,
+            },
+          },
+        ],
+      },
+    },
+    {
+      $unwind: {
+        path: '$modules',
+      },
+    },
+    {
+      $replaceRoot: {
+        newRoot: '$modules',
+      },
+    },
+    {
+      $lookup: {
+        from: 'attendances',
+        localField: '_id',
+        foreignField: 'moduleId',
+        as: 'attendances',
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              date: 1,
+              createdAt: 1,
+            },
+          },
+        ],
+      },
+    },
+  ]);
+
+  res.send({
+    data: query || [],
+  });
+};
 
 export const StartAttendance = async (
   req: ExpressRequest<IInitiateAttendanceReq>,
