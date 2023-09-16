@@ -1,0 +1,35 @@
+[tool.coverage.run]
+branch = true
+source = [ "services_sign_process" ]
+
+[tool.coverage.report]
+exclude_lines = ['if TYPE_CHECKING:']
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-fail-under=100 --cov-report html:'../../../coverage/apps/services/sign-process/html' --cov-report xml:'../../../coverage/apps/services/sign-process/coverage.xml' --junitxml='../../../reports/apps/services/sign-process/unittests/junit.xml' --html='../../../reports/apps/services/sign-process/unittests/html/index.html'"
+
+[tool.poetry]
+name = "sign"
+version = "1.0.0"
+description = "process"
+authors = [ ]
+license = 'Proprietary'
+readme = 'README.md'
+
+  [[tool.poetry.packages]]
+  include = "services_sign_process"
+
+  [tool.poetry.dependencies]
+  python = ">=3.8,<3.10"
+  python-dotenv = "^1.0.0"
+  boto3 = "^1.26.145"
+  pymongo = "^4.3.3"
+  opencv-python = "^4.7.0.72"
+  numpy = "^1.24.3"
+
+
+
+[build-system]
+requires = ["poetry-core==1.1.0"]
+build-backend = "poetry.core.masonry.api"

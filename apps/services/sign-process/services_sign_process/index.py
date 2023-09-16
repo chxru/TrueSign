@@ -1,11 +1,11 @@
-import time
-import boto3
 import json
 import os
+import time
+import boto3
 from dotenv import load_dotenv
-from table2cell.process.attendance import process_attendance
-from table2cell.process.refsheets import process_reference_sheets
+from services_sign_process.app import handle_signature
 from table2cell.s3 import download_image
+
 
 load_dotenv()
 
@@ -19,7 +19,7 @@ sqs = boto3.client(
 
 def listen_queue():
     response = sqs.receive_message(
-        QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
+        QueueUrl=os.getenv("SQS_EXTRACTED_QUEUE_NAME"),
         MaxNumberOfMessages=5,
     )
 
@@ -41,30 +41,12 @@ def listen_queue():
         print("processing file " + key)
 
         arr = key.split("/")
-        image_type = arr[1]
-        unique_id = arr[2]
-        file_name = arr[3]
+        attendance_id = arr[1]
+        registration_no = arr[2].split(".")[0]
 
-        if image_type == "reference_sign_sheets":
-            image_path = download_image(key, "reference")
-            process_reference_sheets(unique_id, file_name, image_path)
-            delete_from_queue(message["ReceiptHandle"])
-            return
+        downloaded_img = download_image(key, "sign")
 
-        if image_type == "attendance":
-            image_path = download_image(key, "attendance")
-            process_attendance(unique_id, file_name, image_path)
-            delete_from_queue(message["ReceiptHandle"])
-            return
-
-        print("Unrecognized image type", key)
-
-
-def delete_from_queue(receipt_handle: str):
-    sqs.delete_message(
-        QueueUrl=os.getenv("SQS_ATTENDANCE_QUEUE_NAME"),
-        ReceiptHandle=receipt_handle,
-    )
+        handle_signature(attendance_id, registration_no, downloaded_img)
 
 
 if __name__ == "__main__":
