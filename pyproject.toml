@@ -9,9 +9,16 @@ readme = "README.md"
   [tool.poetry.dependencies]
   python = ">=3.8,<3.10"
   faker = "^19.3.0"
+  opencv-python = "^4.8.0.76"
+  torch = "^2.0.1"
+  torchvision = "^0.15.2"
 
     [tool.poetry.dependencies.table2cell]
     path = "apps/services/table2cell"
+    develop = true
+
+    [tool.poetry.dependencies.sign]
+    path = "apps/services/sign-process"
     develop = true
 
 [build-system]
