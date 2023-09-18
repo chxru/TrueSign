@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from table2cell.hints import Border
 from table2cell.constants import MAX_COLS, MAX_ROWS
+import matplotlib.pyplot as plt
 
 
 def process_image(
@@ -39,12 +40,17 @@ def process_image(
             x, y, w, h = cell  # type: ignore
             cropped = __crop_image(warped_image, x, y, w, h)
             cropped = __enhance_image(cropped)
+
+            cv2.imshow("cropped", cropped)
+            cv2.waitKey(0)
+
             cells.append(cropped)
 
     return cells
 
 
 def save_image(image, path):
+    print("saving image to", path)
     cv2.imwrite(path, image)
 
 

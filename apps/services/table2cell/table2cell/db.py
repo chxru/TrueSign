@@ -18,7 +18,7 @@ if not MONGO_USERNAME or not MONGO_PASSWORD or not MONGO_HOST:
 mongo_url = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}/"
 mongo = MongoClient(mongo_url)
 
-db = mongo["test"]
+db = mongo["prod"]
 attendance_collection: Collection[Attendance] = db["attendances"]
 modules_collection: Collection[Modules] = db["modules"]
 students_collection: Collection[dict] = db["students"]
@@ -34,6 +34,13 @@ def get_attendance_data(attendance_id: str) -> Attendance:
 
 
 def get_refsig_data(unique_id: str, file_name: str) -> RefSigs:
+    print(unique_id, file_name)
+
+    # select all
+    x = refsigs_collection.find({})
+    for i in x:
+        print(i)
+
     data = refsigs_collection.find_one({"uniqueId": unique_id, "fileName": file_name})
     if not data:
         raise Exception("RefSig data not found")

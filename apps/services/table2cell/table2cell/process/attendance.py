@@ -34,7 +34,7 @@ def process_attendance(attendance_id: str, file_name: str, image_path: str):
     )
 
     # make a folder to save processed images
-    dest_dir = "/tmp/processed/attendance/" + attendance_id + "/" + str(page_no) + "/"
+    dest_dir = "./tmp/processed/attendance/" + attendance_id + "/" + str(page_no) + "/"
     os.makedirs(dest_dir, exist_ok=True)
 
     for cell, student in zip(cells, students):
@@ -44,4 +44,4 @@ def process_attendance(attendance_id: str, file_name: str, image_path: str):
     for file_name in os.listdir(dest_dir):
         file_path = dest_dir + file_name
         dest_name = "extracted_signs/" + attendance_id + "/" + file_path.split("/")[-1]
-        upload_img(file_name, dest_name)
+        upload_img(file_path, dest_name)

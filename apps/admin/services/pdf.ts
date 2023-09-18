@@ -160,8 +160,8 @@ export const GenerateAttendanceSheet = async (
 
   await mainPage(
     doc,
-    moduleName,
-    moduleId,
+    'Reference Sign Sheet',
+    '',
     students.splice(0, MAX_ROWS_FIRST_PAGE * MAX_COLS)
   );
 

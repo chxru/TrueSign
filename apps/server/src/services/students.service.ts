@@ -57,21 +57,30 @@ export const HandleUpload = async (
     });
   }
 
-  const images = req.files['images[]'];
-  if (!Array.isArray(images)) {
+  let images = req.files['images[]'];
+  if (!images) {
     return res.status(400).send({
       message: 'Invalid request body, no images found',
     });
   }
 
-  if (!Array.isArray(req.body['borders[]'])) {
+  if (!Array.isArray(images)) {
+    images = [images];
+  }
+
+  let reqBorders = req.body['borders[]'];
+  if (!reqBorders) {
     return res.status(400).send({
       message: 'Invalid request body, no borders found',
     });
   }
 
+  if (!Array.isArray(reqBorders)) {
+    reqBorders = [reqBorders];
+  }
+
   const borders: IBorders[] = [];
-  for (const border of req.body['borders[]']) {
+  for (const border of reqBorders) {
     try {
       borders.push(JSON.parse(border));
     } catch (error) {
@@ -81,14 +90,19 @@ export const HandleUpload = async (
     }
   }
 
-  if (!Array.isArray(req.body['pageNo[]'])) {
+  let reqPageNos = req.body['pageNo[]'];
+  if (!reqPageNos) {
     return res.status(400).send({
       message: 'Invalid request body, no pageNos found',
     });
   }
 
+  if (!Array.isArray(reqPageNos)) {
+    reqPageNos = [reqPageNos];
+  }
+
   const pageNos: number[] = [];
-  for (const pageNo of req.body['pageNo[]']) {
+  for (const pageNo of reqPageNos) {
     try {
       pageNos.push(parseInt(pageNo));
     } catch (error) {
@@ -98,17 +112,22 @@ export const HandleUpload = async (
     }
   }
 
-  if (!Array.isArray(req.body['students[]'])) {
+  let reqStudents = req.body['students[]'];
+  if (!reqStudents) {
     return res.status(400).send({
       message: 'Invalid request body, no students found',
     });
+  }
+
+  if (!Array.isArray(reqStudents)) {
+    reqStudents = [reqStudents];
   }
 
   // timestamp act as a unique id in later steps
   const uniqueId = Date.now();
 
   const students: (IStudent & { importedIn: string })[] = [];
-  for (const student of req.body['students[]']) {
+  for (const student of reqStudents) {
     try {
       students.push({
         ...JSON.parse(student),

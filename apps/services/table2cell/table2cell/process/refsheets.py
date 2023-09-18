@@ -45,20 +45,28 @@ def process_reference_sheets(unique_id: str, file_name: str, image_path: str):
     )
 
     # make a folder to save processed images
-    dir = "/tmp/processed/reference_sign_sheets/" + unique_id + "/" + str(page_no) + "/"
+    dir = (
+        "./tmp/processed/reference_sign_sheets/" + unique_id + "/" + str(page_no) + "/"
+    )
     os.makedirs(dir, exist_ok=True)
+
+    import matplotlib.pyplot as plt
 
     for cell, student in zip(cells, recreated_students):
         student_id, duplicate_id = student
         dest = dir + student_id.replace("/", "_") + "_" + str(duplicate_id) + ".png"
-        save_image(cell, dest)
+
+        plt.imshow(cell)
+        plt.title(student_id + "_" + str(duplicate_id))
+        plt.show()
+        # save_image(cell, dest)
 
         # upload image to s3
-        upload_img(
-            dest,
-            "refsigs/"
-            + student_id.replace("/", "_")
-            + "/"
-            + str(duplicate_id)
-            + ".png",
-        )
+        # upload_img(
+        #     dest,
+        #     "refsigs/"
+        #     + student_id.replace("/", "_")
+        #     + "/"
+        #     + str(duplicate_id)
+        #     + ".png",
+        # )

@@ -20,7 +20,7 @@ export const MongoDBConnect = async () => {
     throw new Error('MONGO_HOST not set');
   }
 
-  const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
+  const uri = `mongodb+srv://${username}:${password}@${host}/prod?retryWrites=true&w=majority`;
 
   await connect(uri);
 };

@@ -18,11 +18,11 @@ def handle_signature(attendance_id: str, registration_no: str, signature_path: s
     sign = __load_image(signature_path)
 
     # TODO: unncessarry cv2 imread inside
-    # isAbsent = markAbsent(signature_path, attendance_id, registration_no)
+    isAbsent = markAbsent(signature_path, attendance_id, registration_no)
 
-    # if isAbsent:
-    #     print(f"{attendance_id} marked as absent")
-    #     return
+    if isAbsent:
+        print(f"{attendance_id} marked as absent")
+        return
 
     # download reference signatures
     refsigs = download_directory(
