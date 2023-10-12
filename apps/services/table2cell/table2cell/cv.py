@@ -1,9 +1,9 @@
 import os
 import cv2
-from cv2.typing import MatLike
 import numpy as np
+from cv2.typing import MatLike
 from table2cell.hints import Border
-from table2cell.constants import MAX_COLS, MAX_ROWS
+from table2cell.constants import MAX_COLS
 
 
 def process_image(
@@ -11,7 +11,7 @@ def process_image(
     page: int,
     expected_signs: int,
     borders: Border,
-) -> list[MatLike]:
+) -> list[cv2.Mat]:
     # remove file name from path
     image_dir = "/".join(image_path.split("/")[:-1])
 
@@ -27,9 +27,8 @@ def process_image(
     # bounding_boxes = __calculate_bounding_boxes(contours)
 
     cells = __get_cells(contours, expected_signs)
-    grid = __sort_boxes_in_2D(cells)
+    grid = __sort_boxes_in_2D(cells, expected_signs)
 
-    # n = 0
     cells = []
 
     for row in grid:
@@ -129,34 +128,24 @@ def __find_contours(gray_image: MatLike):
 
     contours, _ = cv2.findContours(final_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    x, y, w, h = cv2.boundingRect(contours[0])
-
     return contours
 
 
-def __calculate_bounding_boxes(contours):
-    bounding_boxes = [cv2.boundingRect(c) for c in contours]
-    return bounding_boxes
+def __sort_boxes_in_2D(bounding_boxes, expected_signs: int):
+    # creating grid
+    temp = [0 for x in range(expected_signs)]
+    grid = [temp[i : i + MAX_COLS] for i in range(0, len(temp), MAX_COLS)]
 
+    sorted_by_y = sorted(bounding_boxes, key=lambda tup: tup[1])
 
-def __sort_boxes_in_2D(bounding_boxes):
-    grid = [[0 for x in range(MAX_COLS)] for y in range(MAX_ROWS)]
+    for [i, row] in enumerate(grid):
+        n_row = len(row)
+        row = sorted_by_y[:n_row]
+        sorted_by_y = sorted_by_y[n_row:]
+        row = sorted(row, key=lambda tup: tup[0])
 
-    sorted_by_x = sorted(bounding_boxes, key=lambda tup: tup[0])
-
-    def fn(n):
-        # get cells that should be in same column
-        col = sorted_by_x[MAX_ROWS * n : MAX_ROWS * (n + 1)]
-
-        # sort them by y
-        sorted_by_y = sorted(col, key=lambda tup: tup[1])
-
-        # add them to grid
-        for i, c in enumerate(sorted_by_y):
-            grid[i][n] = c
-
-    for i in range(MAX_COLS):
-        fn(i)
+        for j in range(n_row):
+            grid[i][j] = row[j]
 
     return grid
 
@@ -204,13 +193,13 @@ def __get_closest_indices(lst, cell_count):
 
 if __name__ == "__main__":
     process_image(
-        "./assets/attendance_sheets/signs.jpg",
+        "./notebooks/demo/images/attendance.jpg",
         0,
-        63,
+        50,
         {
-            "topLeft": {"x": 0.0, "y": 0.0},
-            "topRight": {"x": 1.0, "y": 0.0},
-            "bottomLeft": {"x": 0.0, "y": 1.0},
-            "bottomRight": {"x": 1.0, "y": 1.0},
+            "topLeft": {"x": 0.01981833195706028, "y": 0.07065217391304347},
+            "topRight": {"x": 0.9033856317093312, "y": 0.06521739130434782},
+            "bottomLeft": {"x": 0.042113955408753095, "y": 0.9809782608695652},
+            "bottomRight": {"x": 0.884393063583815, "y": 0.9864130434782609},
         },
     )
