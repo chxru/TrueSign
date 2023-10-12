@@ -10,7 +10,7 @@ def markAbsent(file_path: str, attendance_id: str, registration_no: str) -> bool
     if not __isAbsent(file_path):
         return False
 
-    doc = mark_attendance(attendance_id, registration_no, True)
+    mark_attendance(attendance_id, registration_no, True)
     return True
 
 
