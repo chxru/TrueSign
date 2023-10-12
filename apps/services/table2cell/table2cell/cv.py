@@ -1,5 +1,6 @@
 import os
 import cv2
+from cv2.typing import MatLike
 import numpy as np
 from table2cell.hints import Border
 from table2cell.constants import MAX_COLS, MAX_ROWS
@@ -10,7 +11,7 @@ def process_image(
     page: int,
     expected_signs: int,
     borders: Border,
-) -> list[cv2.Mat]:
+) -> list[MatLike]:
     # remove file name from path
     image_dir = "/".join(image_path.split("/")[:-1])
 
@@ -29,7 +30,7 @@ def process_image(
     grid = __sort_boxes_in_2D(cells)
 
     # n = 0
-    cells: list[cv2.Mat] = []
+    cells = []
 
     for row in grid:
         for cell in row:
@@ -48,7 +49,7 @@ def save_image(image, path):
     cv2.imwrite(path, image)
 
 
-def __warp_image(image: cv2.Mat, borders: Border) -> cv2.Mat:
+def __warp_image(image: MatLike, borders: Border) -> MatLike:
     img_height, img_width = image.shape[:-1]
 
     top_left = [
@@ -79,24 +80,24 @@ def __warp_image(image: cv2.Mat, borders: Border) -> cv2.Mat:
     return cv2.warpPerspective(image, matrix, (img_width, img_height))
 
 
-def __enhance_image(image: cv2.Mat) -> cv2.Mat:
+def __enhance_image(image: MatLike) -> MatLike:
     # enhance saturation
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     h, s, v = cv2.split(hsv)
-    s = np.clip(s * 1.5, 0, 255).astype(np.uint8)
+    s = np.clip(s * 1.5, 0, 255).astype(np.uint8)  # type: ignore
     hsv = cv2.merge((h, s, v))
 
     return cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 
 
-def __find_contours(gray_image: cv2.Mat):
+def __find_contours(gray_image: MatLike):
     # perform both global and otsu thresholding
     (_, binary_image) = cv2.threshold(
         gray_image, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
     )
 
     # invert the image
-    thresh_img = 255 - binary_image
+    thresh_img = 255 - binary_image  # type: ignore
 
     # perform morphological operations
     kernel_length = np.array(gray_image).shape[1] // 80
@@ -120,7 +121,7 @@ def __find_contours(gray_image: cv2.Mat):
         verticle_lines_img, alpha, horizontal_lines_img, beta, 0.0
     )
 
-    weighted_binary_image = cv2.erode(~weighted_binary_image, kernel, iterations=2)
+    weighted_binary_image = cv2.erode(~weighted_binary_image, kernel, iterations=2)  # type: ignore
 
     (_, final_image) = cv2.threshold(
         weighted_binary_image, 128, 255, cv2.THRESH_BINARY | cv2.THRESH_OTSU
