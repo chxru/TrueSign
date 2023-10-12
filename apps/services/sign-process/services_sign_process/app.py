@@ -1,6 +1,6 @@
 from services_sign_process.absent import markAbsent
+from services_sign_process.db import mark_attendance
 from services_sign_process.dl import do_signet
-from services_sign_process.preprocess import normalize_image
 from skimage.io import imread
 from skimage import img_as_ubyte  # type: ignore
 from skimage.transform import resize
@@ -44,9 +44,14 @@ def handle_signature(attendance_id: str, registration_no: str, signature_path: s
             # sign = cv2.resize(sign, (ref.shape[1], ref.shape[0]))
             sign = resize(sign, (ref.shape[0], ref.shape[1]))
 
-        authneticity = do_signet(ref, sign)
-        authenticities.append(authneticity)
+        try:
+            authneticity = do_signet(ref, sign)
+            authenticities.append(authneticity)
+        except:
+            authenticities.append(0)
 
-    # print average of authenticities
-    avg = sum(authenticities) / len(authenticities)
-    print(f"Average: {avg}")
+    # get the highest authenticity
+    highest_authenticity = max(authenticities)
+
+    # update attendance marking
+    mark_attendance(attendance_id, registration_no, False, highest_authenticity)

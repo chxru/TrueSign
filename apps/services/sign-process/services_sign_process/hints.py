@@ -8,3 +8,4 @@ class AttendanceMarking(TypedDict):
     student_id: ObjectId
     is_absent: bool
     sign_authenticity: float
+    sign_state: str

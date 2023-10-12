@@ -9,7 +9,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Using {device} device")
 
 state_dict, _, _ = torch.load(
-    "apps\\services\\sign-process\\services_sign_process\\model\\signet.pth",
+    "model\\signet.pth",
     map_location=device,
 )
 
@@ -34,7 +34,8 @@ def do_signet(ref, sign):
         sign_tensor_normalized = F.normalize(output[1], dim=0)
 
         # calculate cosine similarity
-        cos = torch.nn.CosineSimilarity(dim=0, eps=1e-6)
-        cos_sim = cos(ref_tensor_normalized, sign_tensor_normalized)
+        cos_sim = F.cosine_similarity(
+            ref_tensor_normalized, sign_tensor_normalized, dim=0
+        )
 
         return cos_sim.item()

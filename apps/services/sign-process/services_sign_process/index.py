@@ -20,7 +20,7 @@ sqs = boto3.client(
 def listen_queue():
     response = sqs.receive_message(
         QueueUrl=os.getenv("SQS_EXTRACTED_QUEUE_NAME"),
-        MaxNumberOfMessages=5,
+        MaxNumberOfMessages=10,
     )
 
     if "Messages" not in response:
@@ -29,6 +29,7 @@ def listen_queue():
     print("processing message")
 
     for message in response["Messages"]:
+        receipt_handle = message["ReceiptHandle"]
         decoded_message = json.loads(message["Body"])["Message"]
 
         try:
@@ -48,6 +49,15 @@ def listen_queue():
 
         handle_signature(attendance_id, registration_no, downloaded_img)
 
+        delete_from_queue(receipt_handle)
+
+
+def delete_from_queue(receipt_handle: str):
+    sqs.delete_message(
+        QueueUrl=os.getenv("SQS_EXTRACTED_QUEUE_NAME"),
+        ReceiptHandle=receipt_handle,
+    )
+
 
 if __name__ == "__main__":
     print("listening to queue")
@@ -55,5 +65,4 @@ if __name__ == "__main__":
     while True:
         listen_queue()
 
-        # sleep 30sec
-        time.sleep(30)
+        time.sleep(5)

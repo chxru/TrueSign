@@ -33,6 +33,12 @@ def preprocess_signature(
 
     """
     img = img.astype(np.uint8)
+
+    # remove 10px from each side but keeping the same center
+    height, width = img.shape
+    margin = 10
+    img = img[margin : height - margin, margin : width - margin]
+
     centered = normalize_image(img, canvas_size)
     inverted = 255 - centered
     resized = resize_image(inverted, img_size)
@@ -96,9 +102,9 @@ def normalize_image(
     # for most cases (may be ok for feature learning, so we don't raise an error)
     if img_rows > max_rows:
         # Case 1: image larger than required (height):  Crop.
-        print(
-            "Warning: cropping image. The signature should be smaller than the canvas size"
-        )
+        # print(
+        #     "Warning: cropping image. The signature should be smaller than the canvas size"
+        # )
         r_start = 0
         difference = img_rows - max_rows
         crop_start = difference // 2
@@ -114,9 +120,9 @@ def normalize_image(
 
     if img_cols > max_cols:
         # Case 3: image larger than required (width). Crop.
-        print(
-            "Warning: cropping image. The signature should be smaller than the canvas size"
-        )
+        # print(
+        #     "Warning: cropping image. The signature should be smaller than the canvas size"
+        # )
         c_start = 0
         difference = img_cols - max_cols
         crop_start = difference // 2
