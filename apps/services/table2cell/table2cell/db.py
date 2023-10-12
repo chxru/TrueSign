@@ -11,6 +11,7 @@ load_dotenv()
 MONGO_USERNAME = os.getenv("MONGO_USERNAME")
 MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
 MONGO_HOST = os.getenv("MONGO_HOST")
+MONGO_DB = os.getenv("MONGO_DB") or "test"
 
 if not MONGO_USERNAME or not MONGO_PASSWORD or not MONGO_HOST:
     raise Exception("MongoDB credentials are missing")
@@ -18,7 +19,7 @@ if not MONGO_USERNAME or not MONGO_PASSWORD or not MONGO_HOST:
 mongo_url = f"mongodb+srv://{MONGO_USERNAME}:{MONGO_PASSWORD}@{MONGO_HOST}/"
 mongo = MongoClient(mongo_url)
 
-db = mongo["test"]
+db = mongo[MONGO_DB]
 attendance_collection: Collection[Attendance] = db["attendances"]
 modules_collection: Collection[Modules] = db["modules"]
 students_collection: Collection[dict] = db["students"]
