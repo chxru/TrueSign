@@ -7,6 +7,7 @@ export const MongoDBConnect = async () => {
   const username = process.env['MONGO_USERNAME'];
   const password = process.env['MONGO_PASSWORD'];
   const host = process.env['MONGO_HOST'];
+  const db = process.env['MONGO_DB'];
 
   if (!username) {
     throw new Error('MONGO_USERNAME not set');
@@ -20,7 +21,7 @@ export const MongoDBConnect = async () => {
     throw new Error('MONGO_HOST not set');
   }
 
-  const uri = `mongodb+srv://${username}:${password}@${host}/?retryWrites=true&w=majority`;
+  const uri = `mongodb+srv://${username}:${password}@${host}/${db}?retryWrites=true&w=majority`;
 
   await connect(uri);
 };
