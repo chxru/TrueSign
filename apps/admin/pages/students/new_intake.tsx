@@ -22,12 +22,12 @@ const NewIntakePage: FunctionComponent = () => {
 
   const handleReferenceSheetGen = async () => {
     await GenerateAttendanceSheet(
-      'ref-sheets',
-      'ref-sheets',
+      'Sign Sheet',
+      'Reference',
       store.students
         .map((s) => s.studentId)
         .sort()
-        .flatMap((s) => [s, s, s, s, s]) // repeat each cell five times
+        .flatMap((s) => [s, s]) // repeat each cell two times
     );
 
     setDownloadBtnClicked(true);
