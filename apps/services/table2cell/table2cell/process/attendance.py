@@ -44,4 +44,4 @@ def process_attendance(attendance_id: str, file_name: str, image_path: str):
     for file_name in os.listdir(dest_dir):
         file_path = dest_dir + file_name
         dest_name = "extracted_signs/" + attendance_id + "/" + file_path.split("/")[-1]
-        upload_img(file_name, dest_name)
+        upload_img(file_path, dest_name)
